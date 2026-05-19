@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>股票小白養成計劃 — 第二天</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F0E8;
+    --ink: #1A1410;
+    --paper: #FDFAF4;
+    --accent: #C8401A;
+    --accent2: #2A6B3C;
+    --gold: #B8860B;
+    --muted: #7A6F63;
+    --border: #D8D0C4;
+    --card: #FFFFFF;
+    --highlight: #FFF3CD;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans TC', sans-serif;
+    line-height: 1.8;
+  }
+
+  /* === HEADER === */
+  .masthead {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .masthead-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 48px;
+    border-bottom: 1px solid #333;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: #888;
+  }
+
+  .masthead-main {
+    padding: 60px 48px 48px;
+    position: relative;
+  }
+
+  .day-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .masthead h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--bg);
+    max-width: 800px;
+  }
+
+  .masthead h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .masthead-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid #333;
+  }
+
+  .meta-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 0.1em;
+  }
+
+  .meta-item strong {
+    display: block;
+    color: var(--bg);
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  /* === PROGRESS BAR === */
+  .progress-bar-wrap {
+    background: #111;
+    padding: 0 48px;
+  }
+
+  .prog-inner {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 14px 0;
+  }
+
+  .prog-seg {
+    flex: 1;
+    height: 3px;
+    background: #333;
+    border-radius: 2px;
+  }
+
+  .prog-seg.done { background: var(--accent); }
+  .prog-seg.active { background: var(--bg); }
+
+  .prog-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #666;
+    letter-spacing: 0.1em;
+    margin-left: 12px;
+    white-space: nowrap;
+  }
+
+  /* === CONTENT === */
+  .content {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 64px 24px;
+  }
+
+  .kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+
+  p {
+    color: #3A3530;
+    font-size: 1.02rem;
+    margin-bottom: 18px;
+    line-height: 1.85;
+  }
+
+  /* === PULL QUOTE === */
+  .pull-quote {
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 0;
+    margin: 40px 0;
+  }
+
+  .pull-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.2rem, 3vw, 1.7rem);
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* === FRAMEWORK BOX === */
+  .framework {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 40px;
+    margin: 40px 0;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .framework::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(200,64,26,0.15) 0%, transparent 70%);
+  }
+
+  .framework .fw-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .framework h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+    color: var(--bg);
+  }
+
+  .fw-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .fw-step {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid #2a2a2a;
+    align-items: flex-start;
+  }
+
+  .fw-step:last-child { border-bottom: none; }
+
+  .fw-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 40px;
+    margin-top: 2px;
+  }
+
+  .fw-step-content h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--bg);
+    margin-bottom: 6px;
+  }
+
+  .fw-step-content p {
+    font-size: 0.9rem;
+    color: #999;
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  /* === INDUSTRY CARDS === */
+  .industry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2px;
+    margin: 32px 0;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .ind-card {
+    background: var(--paper);
+    padding: 24px 20px;
+    transition: background 0.15s;
+    cursor: default;
+  }
+
+  .ind-card:hover { background: var(--highlight); }
+
+  .ind-icon { font-size: 1.8rem; margin-bottom: 10px; }
+
+  .ind-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .ind-card .trend {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  .trend.up { background: #D4EDDA; color: var(--accent2); }
+  .trend.neutral { background: #FFF3CD; color: #856404; }
+  .trend.watch { background: #CCE5FF; color: #004085; }
+
+  .ind-card p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* === FILTER TABLE === */
+  .filter-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+  }
+
+  .filter-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--ink);
+    background: var(--bg);
+  }
+
+  .filter-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    color: #3A3530;
+    vertical-align: top;
+  }
+
+  .filter-table tr:hover td { background: var(--highlight); }
+
+  .filter-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* === ANALOGY === */
+  .analogy-box {
+    background: var(--highlight);
+    border-left: 4px solid var(--gold);
+    padding: 28px 32px;
+    margin: 32px 0;
+    border-radius: 0 6px 6px 0;
+    position: relative;
+  }
+
+  .analogy-box::before {
+    content: '💡 比喻時間';
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .analogy-box p {
+    color: #5a4500;
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  /* === WARNING === */
+  .warning-box {
+    background: #FFF0ED;
+    border-left: 4px solid var(--accent);
+    padding: 24px 28px;
+    margin: 32px 0;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .warning-box::before {
+    content: '⚠️ 注意';
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .warning-box p { color: #7a1a0a; margin: 0; }
+
+  /* === NOKIA REVISIT === */
+  .nok-box {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 32px;
+    margin: 40px 0;
+    position: relative;
+  }
+
+  .nok-box::before {
+    content: '📌 Nokia 案例複習';
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+    display: block;
+    margin-bottom: 14px;
+  }
+
+  .nok-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+
+  .nok-box p { font-size: 0.95rem; color: #3A3530; margin-bottom: 10px; }
+  .nok-box p:last-child { margin-bottom: 0; }
+
+  .nok-chain {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+    font-size: 0.88rem;
+  }
+
+  .chain-node {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+  }
+
+  .chain-arrow { color: var(--muted); font-size: 1.1rem; }
+
+  /* === DIVIDER === */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 60px 0 48px;
+  }
+
+  .section-divider span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* === CHECKLIST === */
+  .checklist { list-style: none; }
+
+  .checklist li {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.97rem;
+    color: #3A3530;
+    align-items: flex-start;
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+
+  .cbox {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .cbox.done { background: var(--accent2); border-color: var(--accent2); }
+  .cbox.done::after { content: '✓'; color: white; font-size: 12px; font-weight: 700; }
+
+  /* === HOMEWORK === */
+  .homework {
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 8px;
+    padding: 40px;
+    margin-top: 48px;
+  }
+
+  .hw-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .homework h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--bg);
+    margin-bottom: 28px;
+  }
+
+  .hw-task {
+    display: flex;
+    gap: 20px;
+    padding: 18px 0;
+    border-bottom: 1px solid #2a2a2a;
+    align-items: flex-start;
+  }
+
+  .hw-task:last-child { border-bottom: none; }
+
+  .hw-n {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    border: 1px solid #3a3a3a;
+    padding: 4px 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .hw-task p { font-size: 0.95rem; color: #ccc; margin: 0; line-height: 1.75; }
+  .hw-task strong { color: white; }
+
+  /* === FOOTER === */
+  .footer {
+    background: var(--ink);
+    color: #555;
+    text-align: center;
+    padding: 40px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+
+  .footer span { color: var(--accent); }
+
+  /* === REVEAL === */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 600px) {
+    .masthead-main { padding: 40px 24px 32px; }
+    .masthead-top { padding: 10px 24px; }
+    .progress-bar-wrap { padding: 0 24px; }
+    .masthead-meta { flex-wrap: wrap; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-top">
+    <span>股票小白養成計劃</span>
+    <span>DAY 02 / 07</span>
+    <span>選股方向</span>
+  </div>
+  <div class="masthead-main">
+    <span class="day-tag">Day 2 — Finding Your Targets</span>
+    <h1>在茫茫股海中，<em>找到你的魚</em></h1>
+    <div class="masthead-meta">
+      <div class="meta-item"><strong>今日主題</strong>產業 → 個股 選股框架</div>
+      <div class="meta-item"><strong>學習時間</strong>約 15 分鐘</div>
+      <div class="meta-item"><strong>難度</strong>★★☆☆☆</div>
+      <div class="meta-item"><strong>作業</strong>1 題實作</div>
+    </div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="prog-inner">
+      <div class="prog-seg done"></div>
+      <div class="prog-seg active"></div>
+      <div class="prog-seg"></div>
+      <div class="prog-seg"></div>
+      <div class="prog-seg"></div>
+      <div class="prog-seg"></div>
+      <div class="prog-seg"></div>
+      <span class="prog-label">2 / 7 天完成</span>
+    </div>
+  </div>
+</header>
+
+<!-- CONTENT -->
+<main class="content">
+
+  <!-- 複習昨天 -->
+  <div class="reveal">
+    <div class="kicker">Quick Recap</div>
+    <h2>昨天學了什麼？</h2>
+    <ul class="checklist">
+      <li><div class="cbox done"></div>股票 = 公司所有權的一部分</li>
+      <li><div class="cbox done"></div>三種股票：成長股、價值股、配息股</li>
+      <li><div class="cbox done"></div>Nokia 作業：你已經有了第一個投資論點！</li>
+    </ul>
+
+    <div class="nok-box">
+      <h3>你的 Nokia 投資論點回顧</h3>
+      <p>你昨天說的「諾基亞轉型 AI、Nvidia 入股、已存在 160 年」——這其實就是從<strong>產業趨勢</strong>出發，找到一支個股的標準流程。今天我們要把這個流程系統化，讓你以後可以重複使用。</p>
+      <div class="nok-chain">
+        <span class="chain-node">AI 基礎建設熱潮</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node">網路設備產業</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node">Nokia (NOK)</span>
+      </div>
+      <p style="font-size:0.88rem; color: var(--muted);">這就是「由上而下選股法」的雛形。你已經在用了，只是還不知道這個名字。</p>
+    </div>
+  </div>
+
+  <div class="section-divider"><span>UNIT 01</span></div>
+
+  <!-- 為什麼不能隨便選 -->
+  <div class="reveal">
+    <div class="kicker">The Problem</div>
+    <h2>為什麼不能「隨便選一支」？</h2>
+
+    <p>台灣股市有超過 1,700 支股票，美股更有超過 6,000 支。如果你沒有系統，你只會一直被各種「明牌」、「消息」牽著走，永遠找不到屬於自己的邏輯。</p>
+
+    <div class="analogy-box">
+      <p>想像你去夜市想吃東西，但你沒有計劃，每個攤販都在叫你過去。你最後可能亂吃一通，吃到不合胃口的、甚至拉肚子。<br><br>
+      但如果你事先決定「今天只吃海鮮類」，然後在海鮮攤中挑最新鮮的——這就是選股的正確方式。<strong>先選產業，再選個股。</strong></p>
+    </div>
+
+    <div class="pull-quote">
+      <p>"在對的池塘釣魚，比你的釣技更重要。"</p>
+    </div>
+  </div>
+
+  <div class="section-divider"><span>UNIT 02</span></div>
+
+  <!-- 兩種選股法 -->
+  <div class="reveal">
+    <div class="kicker">Two Approaches</div>
+    <h2>兩種選股方向，你要都學</h2>
+
+    <div class="framework">
+      <div class="fw-label">APPROACH A — 由上而下（Top-Down）</div>
+      <h3>先看大局，再鎖定個股</h3>
+      <div class="fw-steps">
+        <div class="fw-step">
+          <div class="fw-num">01</div>
+          <div class="fw-step-content">
+            <h4>觀察總體經濟趨勢</h4>
+            <p>現在全球最熱的題材是什麼？AI？電動車？高齡化？能源轉型？找到有「風口」的方向。</p>
+          </div>
+        </div>
+        <div class="fw-step">
+          <div class="fw-num">02</div>
+          <div class="fw-step-content">
+            <h4>鎖定受惠產業</h4>
+            <p>這個趨勢會讓哪個產業受益？AI 熱潮 → 半導體、網路設備、散熱、電力基礎建設都受惠。</p>
+          </div>
+        </div>
+        <div class="fw-step">
+          <div class="fw-num">03</div>
+          <div class="fw-step-content">
+            <h4>在產業內選最強個股</h4>
+            <p>這個產業裡，誰是龍頭？誰最有競爭優勢？誰的財務最健康？縮小到 3～5 支候選股。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="framework" style="background: #2A6B3C;">
+      <div class="fw-label" style="color: #aad4b4;">APPROACH B — 由下而上（Bottom-Up）</div>
+      <h3>先發現好公司，再確認趨勢支撐</h3>
+      <div class="fw-steps">
+        <div class="fw-step">
+          <div class="fw-num" style="color: #aad4b4;">01</div>
+          <div class="fw-step-content">
+            <h4>從生活中發現</h4>
+            <p>你最近常去的店、常用的 App、常買的產品……背後的公司是上市公司嗎？就像你發現 Nokia 一樣。</p>
+          </div>
+        </div>
+        <div class="fw-step">
+          <div class="fw-num" style="color: #aad4b4;">02</div>
+          <div class="fw-step-content">
+            <h4>確認公司基本面</h4>
+            <p>這家公司有沒有在賺錢？成長中嗎？這部分是明天（Day 3）會深入學的「基本面分析」。</p>
+          </div>
+        </div>
+        <div class="fw-step">
+          <div class="fw-num" style="color: #aad4b4;">03</div>
+          <div class="fw-step-content">
+            <h4>確認有產業趨勢支撐</h4>
+            <p>這家好公司，有沒有搭上時代的順風車？好公司在夕陽產業裡也很難漲，要兩者兼備。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>兩種方法沒有高下之分，<strong>大多數厲害的投資人兩種都用</strong>，互相驗證。Nokia 的例子剛好是兩種都符合：你從生活中認識它（Bottom-Up），又確認它搭上 AI 趨勢（Top-Down）。</p>
+  </div>
+
+  <div class="section-divider"><span>UNIT 03</span></div>
+
+  <!-- 現在有哪些熱門產業 -->
+  <div class="reveal">
+    <div class="kicker">Industry Map</div>
+    <h2>2025–2026 值得關注的產業方向</h2>
+    <p>以下是目前市場上主要的幾個熱門方向，你可以從中找到你感興趣或有所了解的領域：</p>
+
+    <div class="industry-grid">
+      <div class="ind-card">
+        <div class="ind-icon">🤖</div>
+        <h4>AI / 人工智慧</h4>
+        <span class="trend up">▲ 強勢</span>
+        <p>算力、GPU、AI 應用、AI 基礎建設。目前最強的主線題材，Nokia 正在這裡。</p>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">💡</div>
+        <h4>電力 / 能源</h4>
+        <span class="trend up">▲ 強勢</span>
+        <p>AI 資料中心極度耗電，帶動電廠、電網升級、核能復甦的需求。</p>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">🔧</div>
+        <h4>半導體</h4>
+        <span class="trend up">▲ 強勢</span>
+        <p>晶片設計、製造、封裝。台積電是全球最重要的一環，上中下游都有機會。</p>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">🏦</div>
+        <h4>金融股</h4>
+        <span class="trend neutral">◆ 穩健</span>
+        <p>利率環境對銀行、保險影響大。適合想要穩定股息的投資人。</p>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">💊</div>
+        <h4>生技 / 醫療</h4>
+        <span class="trend watch">◉ 觀察中</span>
+        <p>人口老化長期利多，但個別公司波動大，需要了解藥品研發週期才適合入場。</p>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">🌱</div>
+        <h4>綠能 / 電動車</h4>
+        <span class="trend watch">◉ 觀察中</span>
+        <p>長期趨勢明確，但短期因政策變動（美國關稅等）波動劇烈，要注意時機。</p>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <p>熱門不代表現在買就會漲。有時候「大家都知道的好消息」已經反映在股價裡了。選對產業只是第一步，還要確認<strong>時機和價格</strong>是否合理——這是 Day 4、Day 5 的功課。</p>
+    </div>
+  </div>
+
+  <div class="section-divider"><span>UNIT 04</span></div>
+
+  <!-- 篩選工具 -->
+  <div class="reveal">
+    <div class="kicker">Screening Tools</div>
+    <h2>怎麼從一個產業裡篩出候選股？</h2>
+    <p>找到產業之後，接下來要在幾百支相關股票裡縮小範圍。以下是幾個最常用的篩選條件，不用全部用到，挑 2～3 個開始就夠了：</p>
+
+    <table class="filter-table">
+      <thead>
+        <tr>
+          <th>篩選條件</th>
+          <th>白話意思</th>
+          <th>適合找什麼股</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>市值大小</td>
+          <td>公司有多大？大公司穩、小公司彈性大</td>
+          <td>小白建議先從大型股（市值 >100億）開始</td>
+        </tr>
+        <tr>
+          <td>營收成長率</td>
+          <td>公司的銷售額有沒有在成長？</td>
+          <td>找成長股時很重要，年成長 >15% 是基本門檻</td>
+        </tr>
+        <tr>
+          <td>獲利（EPS）</td>
+          <td>每股賺了多少錢？有沒有在賺錢</td>
+          <td>排除還在虧損的公司（初學者避開）</td>
+        </tr>
+        <tr>
+          <td>股息率</td>
+          <td>公司每年發多少股息給你</td>
+          <td>找配息股時的主要指標，>3% 算不錯</td>
+        </tr>
+        <tr>
+          <td>產業龍頭地位</td>
+          <td>這家公司在產業內是第幾名？</td>
+          <td>優先選產業前 1～3 名，護城河較深</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>免費的篩選工具推薦：<strong>Yahoo Finance Screener</strong>（美股）、<strong>Goodinfo 台灣股市資訊網</strong>（台股）、或直接在 Google 搜尋「[產業名稱] ETF 成分股」也是快速找標的的方法。</p>
+  </div>
+
+  <div class="section-divider"><span>UNIT 05</span></div>
+
+  <!-- Nokia 複習串連 -->
+  <div class="reveal">
+    <div class="kicker">Nokia Revisited</div>
+    <h2>用今天的框架重新看 Nokia</h2>
+
+    <p>用「由上而下」的角度來重組你昨天的分析：</p>
+
+    <div class="nok-box">
+      <h3>Nokia 的選股邏輯拆解</h3>
+      <p><strong>① 趨勢識別：</strong>AI 超級週期 → 全球資料中心爆炸性成長 → 需要大量網路基礎建設升級</p>
+      <p><strong>② 受惠產業：</strong>網路設備 / 電信基礎建設（Nokia 的主戰場）</p>
+      <p><strong>③ 個股亮點：</strong>西方陣營可信賴的供應商、Nvidia 戰略投資背書、5G → 6G 轉型、AI-RAN 新市場</p>
+      <p><strong>④ 風險確認：</strong>P/E 已從 20 飆到 80，市場期待已高，故事需要持續兌現才能支撐股價</p>
+      <div class="nok-chain" style="margin-top:16px;">
+        <span class="chain-node">AI 趨勢</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node">網路設備產業</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node">Nokia ✓</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node">下一步：看財報</span>
+      </div>
+    </div>
+
+    <p>你已經完成了前三步。明天我們就要進入「看財報」這一關——學會用數字判斷一家公司到底有沒有在賺錢。</p>
+  </div>
+
+  <!-- 今天學到 -->
+  <div class="section-divider"><span>Today's Key Takeaways</span></div>
+
+  <div class="reveal">
+    <ul class="checklist">
+      <li><div class="cbox" onclick="this.classList.toggle('done')"></div>選股要「先選產業，再選個股」，不要隨便亂選</li>
+      <li><div class="cbox" onclick="this.classList.toggle('done')"></div>由上而下：趨勢 → 產業 → 個股</li>
+      <li><div class="cbox" onclick="this.classList.toggle('done')"></div>由下而上：生活觀察 → 確認基本面 → 確認趨勢支撐</li>
+      <li><div class="cbox" onclick="this.classList.toggle('done')"></div>熱門產業 ≠ 現在就買，還需要確認時機和價格</li>
+      <li><div class="cbox" onclick="this.classList.toggle('done')"></div>Nokia 的選股邏輯可以用「由上而下」框架完整解釋</li>
+    </ul>
+  </div>
+
+  <!-- 作業 -->
+  <div class="reveal">
+    <div class="homework">
+      <div class="hw-kicker">DAY 2 HOMEWORK</div>
+      <h3>今日作業：建立你的「產業地圖」</h3>
+
+      <div class="hw-task">
+        <div class="hw-n">01</div>
+        <p>從上面六個產業方向中，選出你<strong>最感興趣或最了解的 2 個產業</strong>。不用是最熱門的，選你有感覺的——因為你願意研究的東西，才能研究得深。</p>
+      </div>
+
+      <div class="hw-task">
+        <div class="hw-n">02</div>
+        <p>針對你選的其中一個產業，用 Google 搜尋「<strong>[產業名稱] 龍頭股 2025</strong>」或「<strong>[產業名稱] ETF 成分股</strong>」，找出這個產業裡<strong>3 支你聽過或有印象的公司</strong>，記下它們的股票代號。</p>
+      </div>
+
+      <div class="hw-task">
+        <div class="hw-n">03</div>
+        <p>用一句話回答：<strong>「為什麼你認為這個產業 3 年後會比現在更大？」</strong><br>不需要很精確，用你的直覺和生活觀察回答就好。這個問題的答案，就是你的「產業投資論點」。</p>
+      </div>
+
+      <div class="hw-task">
+        <div class="hw-n">挑戰</div>
+        <p>（選做）把你的 Nokia 和今天新找的產業/個股，畫成一張簡單的流程圖：<strong>趨勢 → 產業 → 個股</strong>。就算只是在紙上畫三個框框也算，把選股邏輯寫下來，是建立投資系統的第一步。</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>股票小白養成計劃 &nbsp;·&nbsp; <span>第二天完成！</span></p>
+  <p style="margin-top:6px;">明天 Day 3：基本面分析 — 學會看財報三表，用數字判斷公司好壞</p>
+  <p style="margin-top:12px; font-size:10px; color:#444;">⚠ 本課程為教育用途，不構成任何投資建議。投資一定有風險。</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

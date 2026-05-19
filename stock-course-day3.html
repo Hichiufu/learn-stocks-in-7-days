@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>股票小白養成計劃 — 第三天</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E1117;
+    --surface: #161B25;
+    --card: #1C2333;
+    --border: #2A3347;
+    --text: #E8EAF0;
+    --muted: #6B7A99;
+    --blue: #4A9EFF;
+    --green: #34D399;
+    --red: #F87171;
+    --yellow: #FBBF24;
+    --purple: #A78BFA;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    line-height: 1.8;
+  }
+
+  /* === HERO === */
+  .hero {
+    padding: 80px 48px 60px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '財報';
+    position: absolute;
+    right: -20px;
+    top: -10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 220px;
+    font-weight: 800;
+    color: rgba(74,158,255,0.04);
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  .day-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(74,158,255,0.1);
+    border: 1px solid rgba(74,158,255,0.25);
+    color: var(--blue);
+    font-family: 'Syne', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    padding: 6px 14px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    max-width: 700px;
+  }
+
+  .hero h1 .accent { color: var(--blue); }
+  .hero h1 .accent2 { color: var(--green); }
+
+  .hero-sub {
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin-top: 20px;
+    max-width: 560px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .stat-item { }
+  .stat-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* PROGRESS */
+  .prog-bar {
+    background: var(--surface);
+    padding: 16px 48px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .prog-seg {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  .prog-seg.done { background: var(--blue); }
+  .prog-seg.now { background: var(--green); }
+
+  .prog-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-left: 12px;
+    white-space: nowrap;
+  }
+
+  /* === SECTIONS === */
+  .wrap {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 72px 24px;
+  }
+
+  .kicker {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .kicker.green { color: var(--green); }
+  .kicker.yellow { color: var(--yellow); }
+  .kicker.purple { color: var(--purple); }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    color: #A8B0C8;
+    font-size: 1.02rem;
+    margin-bottom: 16px;
+    line-height: 1.85;
+  }
+
+  /* === ANALOGY === */
+  .analogy {
+    background: linear-gradient(135deg, rgba(74,158,255,0.06), rgba(74,158,255,0.02));
+    border: 1px solid rgba(74,158,255,0.2);
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin: 28px 0;
+    position: relative;
+  }
+
+  .analogy::before {
+    content: '💡';
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    font-size: 1.4rem;
+    background: var(--bg);
+    padding: 0 6px;
+  }
+
+  .analogy p { color: #C8D4F0; margin: 0; }
+
+  /* === THREE TABLES === */
+  .statements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+
+  .stmt-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+
+  .stmt-card:hover {
+    border-color: var(--blue);
+    transform: translateY(-3px);
+  }
+
+  .stmt-card .top-line {
+    width: 100%;
+    height: 3px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  .tl-blue { background: var(--blue); }
+  .tl-green { background: var(--green); }
+  .tl-yellow { background: var(--yellow); }
+
+  .stmt-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .stmt-card .en {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .stmt-card p { font-size: 0.88rem; color: var(--muted); margin: 0; line-height: 1.65; }
+
+  .stmt-card .key-question {
+    margin-top: 14px;
+    font-size: 0.88rem;
+    color: var(--text);
+    font-style: italic;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* === METRIC CARDS === */
+  .metrics-wrap {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 28px 0;
+  }
+
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 20px;
+  }
+
+  .metric-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .metric-formula {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--blue);
+    margin-bottom: 10px;
+  }
+
+  .metric-plain {
+    font-size: 0.85rem;
+    color: #8090B0;
+    line-height: 1.6;
+  }
+
+  /* === REAL DATA TABLE === */
+  .real-table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 28px 0;
+  }
+
+  .real-table-header {
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .real-table-header h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .live-badge {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    background: rgba(52,211,153,0.1);
+    border: 1px solid rgba(52,211,153,0.3);
+    color: var(--green);
+    padding: 3px 10px;
+    border-radius: 3px;
+  }
+
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  .data-table th {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 16px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .data-table th:first-child { text-align: left; }
+
+  .data-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(42,51,71,0.6);
+    text-align: right;
+    color: #C0C8E0;
+  }
+
+  .data-table td:first-child {
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(74,158,255,0.04); }
+
+  .up { color: var(--green) !important; font-weight: 600; }
+  .down { color: var(--red) !important; font-weight: 600; }
+  .neutral { color: var(--yellow) !important; }
+
+  .stock-pill {
+    display: inline-block;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    font-weight: 400;
+  }
+
+  .pill-nvda { background: rgba(52,211,153,0.15); color: var(--green); }
+  .pill-tsm { background: rgba(74,158,255,0.15); color: var(--blue); }
+  .pill-amzn { background: rgba(251,191,36,0.15); color: var(--yellow); }
+
+  /* === READING GUIDE === */
+  .read-guide {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 32px;
+    margin: 28px 0;
+  }
+
+  .read-guide h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  .guide-row {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .guide-row:last-child { border-bottom: none; }
+
+  .guide-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .guide-content h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .guide-content p {
+    font-size: 0.86rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* === WARNING === */
+  .warn {
+    background: rgba(248,113,113,0.06);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 8px;
+    padding: 22px 26px;
+    margin: 24px 0;
+  }
+
+  .warn::before {
+    content: '⚠️ 小白注意';
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--red);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .warn p { color: #F0A0A0; margin: 0; font-size: 0.92rem; }
+
+  /* === CHECKLIST === */
+  .checklist { list-style: none; margin: 20px 0; }
+
+  .checklist li {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    color: #A8B0C8;
+    font-size: 0.97rem;
+    align-items: flex-start;
+  }
+  .checklist li:last-child { border-bottom: none; }
+
+  .cbox {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cbox.done { background: var(--green); border-color: var(--green); }
+  .cbox.done::after { content: '✓'; color: #0E1117; font-size: 11px; font-weight: 700; }
+
+  /* === DIVIDER === */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 64px 0 52px;
+    color: var(--muted);
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .divider span {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    white-space: nowrap;
+  }
+
+  /* === SCORECARD === */
+  .scorecard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 28px 0;
+  }
+
+  .score-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .score-emoji { font-size: 1.8rem; margin-bottom: 8px; }
+
+  .score-item h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .score-item p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* === HOMEWORK === */
+  .homework {
+    background: linear-gradient(135deg, #0d1a12, #0a1510);
+    border: 1px solid rgba(52,211,153,0.2);
+    border-radius: 12px;
+    padding: 40px;
+    margin-top: 52px;
+  }
+
+  .hw-top {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+
+  .homework h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .hw-item {
+    display: flex;
+    gap: 20px;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(52,211,153,0.08);
+    align-items: flex-start;
+  }
+
+  .hw-item:last-child { border-bottom: none; }
+
+  .hw-n {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+    background: rgba(52,211,153,0.08);
+    border: 1px solid rgba(52,211,153,0.2);
+    padding: 4px 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .hw-item p { font-size: 0.94rem; color: #8AB0A0; margin: 0; line-height: 1.75; }
+  .hw-item strong { color: var(--text); }
+
+  /* === FOOTER === */
+  .footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 48px 24px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .footer span { color: var(--green); }
+
+  /* REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 48px 24px 40px; }
+    .prog-bar { padding: 12px 24px; }
+    .hero::after { font-size: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="day-badge">DAY 03 / 07 &nbsp;·&nbsp; 基本面分析</div>
+  <h1>學會看<br><span class="accent">財報數字</span>，<br>讓<span class="accent2">數據說話</span></h1>
+  <p class="hero-sub">你選了 NVDA、TSMC、AMZN——今天我們就用這三支真實股票的數字，教你讀財報。不是背公式，是真正看懂。</p>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-label">今日主題</div><div class="stat-value">基本面 × 三大財務報表</div></div>
+    <div class="stat-item"><div class="stat-label">學習時間</div><div class="stat-value">約 20 分鐘</div></div>
+    <div class="stat-item"><div class="stat-label">真實案例</div><div class="stat-value">NVDA / TSMC / AMZN</div></div>
+    <div class="stat-item"><div class="stat-label">難度</div><div class="stat-value">★★★☆☆</div></div>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="prog-bar">
+  <div class="prog-seg done"></div>
+  <div class="prog-seg done"></div>
+  <div class="prog-seg now"></div>
+  <div class="prog-seg"></div>
+  <div class="prog-seg"></div>
+  <div class="prog-seg"></div>
+  <div class="prog-seg"></div>
+  <span class="prog-label">3 / 7 天</span>
+</div>
+
+<div class="wrap">
+
+  <!-- INTRO -->
+  <div class="reveal">
+    <div class="kicker">Why Fundamentals</div>
+    <h2>為什麼要看財報？</h2>
+    <p>還記得你的 Nokia 投資論點嗎？「轉型 AI、Nvidia 投資、已存在 160 年」——這些都是「故事」。故事很重要，但故事最終要用「數字」來驗證。公司說自己在成長，財報就是證據。</p>
+
+    <div class="analogy">
+      <p>相親時對方說自己「很優秀、有潛力、收入穩定」——你信嗎？<br><br>
+      理性的做法是看看他的薪資單、存款餘額、信用記錄。<br><br>
+      <strong>財報，就是一家公司的「薪資單＋存款＋信用記錄」。</strong>你的投資論點能不能成立，數字說了算。</p>
+    </div>
+  </div>
+
+  <div class="divider"><span>UNIT 01 — 三大財務報表</span></div>
+
+  <!-- 三大報表 -->
+  <div class="reveal">
+    <div class="kicker">The Big Three</div>
+    <h2>三張表，看懂公司全貌</h2>
+    <p>每家上市公司每季都必須公開三張報表，這三張加在一起就能告訴你這家公司的完整健康狀況：</p>
+
+    <div class="statements-grid">
+      <div class="stmt-card">
+        <div class="top-line tl-blue"></div>
+        <h3>損益表</h3>
+        <span class="en">INCOME STATEMENT</span>
+        <p>記錄公司在某段時間內<strong style="color:#C0C8E0">賺了多少錢、花了多少錢</strong>，最後剩下多少利潤。</p>
+        <div class="key-question">「這家公司有沒有在賺錢？」</div>
+      </div>
+      <div class="stmt-card">
+        <div class="top-line tl-green"></div>
+        <h3>資產負債表</h3>
+        <span class="en">BALANCE SHEET</span>
+        <p>記錄公司在某個時間點，<strong style="color:#C0C8E0">有多少資產、欠了多少債</strong>，財務結構健不健康。</p>
+        <div class="key-question">「這家公司有沒有債台高築？」</div>
+      </div>
+      <div class="stmt-card">
+        <div class="top-line tl-yellow"></div>
+        <h3>現金流量表</h3>
+        <span class="en">CASH FLOW STATEMENT</span>
+        <p>記錄公司的<strong style="color:#C0C8E0">現金實際流入流出</strong>，帳面有利潤，但沒現金一樣危險。</p>
+        <div class="key-question">「這家公司有沒有真正的現金？」</div>
+      </div>
+    </div>
+
+    <div class="analogy">
+      <p>
+        <strong>損益表</strong> = 你這個月的薪資單（收入 - 支出 = 結餘）<br>
+        <strong>資產負債表</strong> = 你的財產清單（有什麼房車存款 vs 欠了多少貸款）<br>
+        <strong>現金流量表</strong> = 你的銀行帳戶實際轉帳紀錄（錢有沒有真的進來）<br><br>
+        三者缺一不可。有人帳面賺錢但現金流為負，就像月薪10萬但每個月要還11萬貸款——隨時可能崩盤。
+      </p>
+    </div>
+  </div>
+
+  <div class="divider"><span>UNIT 02 — 關鍵指標</span></div>
+
+  <!-- 五大指標 -->
+  <div class="reveal">
+    <div class="kicker green">Key Metrics</div>
+    <h2>小白必學的 5 個關鍵數字</h2>
+    <p>財報裡有幾百個數字，但你一開始只需要看懂這 5 個，就能判斷一家公司基本面好不好：</p>
+
+    <div class="metrics-wrap">
+      <div class="metric-card">
+        <div class="metric-name">① 營收成長率</div>
+        <div class="metric-formula">Revenue Growth %</div>
+        <div class="metric-plain">公司銷售額有沒有在增加？成長股要看 YoY（年增率）是否持續正成長。</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">② 毛利率</div>
+        <div class="metric-formula">Gross Margin %</div>
+        <div class="metric-plain">賣東西之後扣掉直接成本，還剩多少？越高代表產品越有定價能力。</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">③ EPS（每股盈餘）</div>
+        <div class="metric-formula">Earnings Per Share</div>
+        <div class="metric-plain">公司賺的錢平均分給每股多少？EPS 持續成長是好訊號。</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">④ 本益比 P/E</div>
+        <div class="metric-formula">Price ÷ EPS</div>
+        <div class="metric-plain">你花多少錢買 $1 的獲利能力？高 P/E = 市場期待高，低 P/E = 可能被低估。</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">⑤ 自由現金流</div>
+        <div class="metric-formula">Free Cash Flow</div>
+        <div class="metric-plain">公司實際產生的現金，扣掉資本支出後還剩多少。是最難造假的數字。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><span>UNIT 03 — 真實數據實戰</span></div>
+
+  <!-- 真實數據 -->
+  <div class="reveal">
+    <div class="kicker yellow">Real Data · 2025</div>
+    <h2>用你選的三支股票實際練習</h2>
+    <p>以下是 NVDA、TSMC、AMZN 的 2025 年真實財報數據，我們一起來解讀：</p>
+
+    <div class="real-table-wrap">
+      <div class="real-table-header">
+        <h4>📊 三大核心數據比較（2025 財年）</h4>
+        <span class="live-badge">✦ 真實數據</span>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>公司</th>
+            <th>年營收</th>
+            <th>營收年增率</th>
+            <th>毛利率</th>
+            <th>EPS 年增率</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>NVIDIA <span class="stock-pill pill-nvda">NVDA</span></td>
+            <td>$1,305億</td>
+            <td class="up">+114%</td>
+            <td class="up">~74%</td>
+            <td class="up">+147%</td>
+          </tr>
+          <tr>
+            <td>台積電 <span class="stock-pill pill-tsm">TSM</span></td>
+            <td>$890億</td>
+            <td class="up">+34%</td>
+            <td class="up">~59%</td>
+            <td class="up">+39%</td>
+          </tr>
+          <tr>
+            <td>Amazon <span class="stock-pill pill-amzn">AMZN</span></td>
+            <td>$6,380億</td>
+            <td class="up">+11%</td>
+            <td class="up">~49%</td>
+            <td class="up">+29%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="read-guide">
+      <h3>🔍 這些數字告訴我們什麼？</h3>
+
+      <div class="guide-row">
+        <div class="guide-icon">🚀</div>
+        <div class="guide-content">
+          <h4>NVIDIA — 爆炸性成長，但風險也大</h4>
+          <p>營收年增 114%、EPS 年增 147%——這種成長速度在大型公司中極為罕見。核心驅動力是 AI 資料中心需求爆發，光資料中心業務就佔總營收 88%。毛利率 74% 代表它有極強的定價能力（賣 $100 的晶片，$74 是利潤）。風險是：這種成長速度無法永遠持續，一旦市場期待落空，估值可能快速修正。</p>
+        </div>
+      </div>
+
+      <div class="guide-row">
+        <div class="guide-icon">🏭</div>
+        <div class="guide-content">
+          <h4>台積電 — 穩健高速，基本面最紮實</h4>
+          <p>營收年增 34%，對一家已經是全球最大晶圓代工廠的公司來說，這個速度非常驚人。毛利率接近 59%，而且是連續幾季持續提升（Q4 2025 已達 62.3%）。最重要的是：它是 NVIDIA、Apple、AMD 等公司「唯一選擇」的代工廠，護城河極深。這就是你流程圖中「AI基礎建設 → TSMC」的數字佐證。</p>
+        </div>
+      </div>
+
+      <div class="guide-row">
+        <div class="guide-icon">☁️</div>
+        <div class="guide-content">
+          <h4>Amazon — 體量最大，AWS 才是真正金雞母</h4>
+          <p>整體營收 $6,380億 看起來成長最慢（+11%），但要注意：Amazon 體量最大，+11% 等於新增了約 $640億 的營收，絕對數字驚人。EPS 成長 29%，且 2026 Q1 已跳升至 +74%，加速中。AWS 雲端業務是利潤主要來源，而你說的「AI 讓雲端需求爆炸」正是 AWS 成長的核心邏輯。你的投資論點已經被數字驗證了。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="warn">
+      <p>這三支股票的基本面都非常強，<strong>但強基本面 ≠ 現在就是好買點</strong>。NVDA 的 P/E 目前超過 40，TSMC 的 P/E 約 25，大家都不便宜。基本面告訴你「這家公司好不好」，但「現在貴不貴」要看技術面和籌碼面——這是 Day 4 和 Day 5 的功課。</p>
+    </div>
+  </div>
+
+  <div class="divider"><span>UNIT 04 — 去哪裡找財報？</span></div>
+
+  <!-- 哪裡找 -->
+  <div class="reveal">
+    <div class="kicker purple">Resources</div>
+    <h2>小白怎麼找到這些數字？</h2>
+    <p>不需要去翻原始的財報 PDF（那幾百頁超痛苦），有工具幫你整理好了：</p>
+
+    <div class="scorecard">
+      <div class="score-item">
+        <div class="score-emoji">📱</div>
+        <h4>Yahoo Finance</h4>
+        <p>搜尋股票代號 → Financials，免費、完整、有歷史數據，美股首選</p>
+      </div>
+      <div class="score-item">
+        <div class="score-emoji">🔍</div>
+        <h4>Macrotrends.net</h4>
+        <p>可以看 10 年以上的歷史財務數據，適合判斷成長趨勢是否持續</p>
+      </div>
+      <div class="score-item">
+        <div class="score-emoji">🇹🇼</div>
+        <h4>Goodinfo（台股）</h4>
+        <p>台灣股市資訊網，台股財報、股利、EPS 歷史一網打盡，免費</p>
+      </div>
+      <div class="score-item">
+        <div class="score-emoji">📊</div>
+        <h4>Stockanalysis.com</h4>
+        <p>美股財報整理得非常清楚，還有各種比率和歷史圖表，強力推薦</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><span>今天學會了什麼</span></div>
+
+  <div class="reveal">
+    <ul class="checklist">
+      <li><div class="cbox" onclick="this.classList.toggle('done')"></div>財報是「驗證投資論點」的數字證據，不是背的，是用來問問題的</li>
+      <li><div class="cbox" onclick="this.classList.toggle('done')"></div>三大報表：損益表（賺不賺）、資產負債表（欠不欠）、現金流量表（有沒有現金）</li>
+      <li><div class="cbox" onclick="this.classList.toggle('done')"></div>5 個關鍵指標：營收成長率、毛利率、EPS、P/E、自由現金流</li>
+      <li><div class="cbox" onclick="this.classList.toggle('done')"></div>NVDA 年增 114%、TSMC 年增 34%、AMZN EPS 加速成長——你的投資論點被數字驗證了</li>
+      <li><div class="cbox" onclick="this.classList.toggle('done')"></div>基本面好 ≠ 現在就買，還要搭配技術面判斷時機</li>
+    </ul>
+  </div>
+
+  <!-- HOMEWORK -->
+  <div class="reveal">
+    <div class="homework">
+      <div class="hw-top">DAY 3 HOMEWORK — 基本面實戰</div>
+      <h3>今日作業：幫你的持股做健康檢查</h3>
+
+      <div class="hw-item">
+        <div class="hw-n">01</div>
+        <p>打開 <strong>Stockanalysis.com</strong>（美股）或 <strong>Goodinfo</strong>（台股），搜尋你的 Nokia（NOK）。<br>
+        找出這 3 個數字：<strong>① 最近一年營收成長率、② 毛利率、③ EPS 是否為正</strong>。把數字記下來。</p>
+      </div>
+
+      <div class="hw-item">
+        <div class="hw-n">02</div>
+        <p>同樣的方法，再查 <strong>NVDA 或 TSMC 其中一支</strong>（你比較感興趣的那支），一樣找出同樣的 3 個數字。<br>跟 Nokia 比較——誰的基本面更強？</p>
+      </div>
+
+      <div class="hw-item">
+        <div class="hw-n">03</div>
+        <p>思考這個問題：<strong>「Nokia 的數字，能支撐你昨天寫的投資論點嗎？」</strong><br>
+        如果數字不夠強，投資論點需要修改嗎？還是你認為「現在還在轉型期，數字之後會跟上」？<br>
+        這個判斷叫做：「<strong>現在買的是故事，還是實績？</strong>」兩者都可以投資，但你必須知道自己在買哪一個。</p>
+      </div>
+
+      <div class="hw-item">
+        <div class="hw-n">挑戰</div>
+        <p>（選做）查看 Nokia 的<strong>自由現金流（Free Cash Flow）</strong>：過去 3 年是正的還是負的？<br>
+        如果是持續正的 → 加分；負的 → 要問「為什麼」。是因為大量投資擴張（可能是好事），還是因為本業虧錢（危險訊號）？</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <p>股票小白養成計劃 &nbsp;·&nbsp; <span>第三天完成！</span> &nbsp;·&nbsp; 明天 Day 4：技術面分析 — 用 K 線圖判斷買賣時機</p>
+  <p style="margin-top:8px; font-size:10px; color:#3a4560;">⚠ 本課程為教育用途，不構成任何投資建議。投資一定有風險，入市前請審慎評估。</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
