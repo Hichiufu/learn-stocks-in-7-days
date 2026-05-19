@@ -515,51 +515,125 @@
     .term-row { grid-template-columns: 1fr; }
     .term-key { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
     .term-val { padding-left: 0; padding-top: 8px; }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 480px) {
+    .course-nav-brand { font-size: 9px; letter-spacing: 0.12em; padding: 7px 16px 5px; }
+    .course-nav-tabs { gap: 3px; padding: 5px 8px; }
+    .nav-tab a { font-size: 10px; padding: 4px 8px; }
+    .section { padding: 56px 20px; }
+    .hero h1 { font-size: clamp(2.2rem, 10vw, 4rem); }
+    .card { padding: 20px; }
+    .homework { padding: 28px 20px; }
+    .analogy { padding: 24px 20px; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .quote-block { padding: 16px 20px; }
   }
 
   /* === COURSE NAV === */
   .course-nav {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: rgba(13,13,13,0.95);
-    backdrop-filter: blur(10px);
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9999;
+    background: rgba(13,13,13,0.97);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 10px 24px;
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    flex-wrap: wrap;
   }
 
-  .course-nav a {
+  .course-nav-brand {
+    text-align: center;
+    padding: 8px 24px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .course-nav-tabs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 16px;
+    overflow: hidden;
+  }
+
+  .nav-tab {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .nav-tab a {
     font-family: 'Space Mono', monospace;
     font-size: 11px;
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: 100px;
     border: 1px solid var(--border);
     color: var(--muted);
     letter-spacing: 0.05em;
     text-decoration: none;
     transition: all 0.2s;
+    display: block;
+    white-space: nowrap;
   }
 
-  .course-nav a:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
+  .nav-tab a:hover { border-color: var(--gold); color: var(--gold); }
 
-  .course-nav a.active {
+  .nav-tab a.active {
     background: var(--gold);
     color: var(--dark);
     border-color: var(--gold);
     font-weight: 700;
   }
 
-  .course-nav a.locked {
-    opacity: 0.35;
+  .nav-tab a.disabled {
+    opacity: 0.3;
     cursor: not-allowed;
     pointer-events: none;
+  }
+
+  .nav-tab .tab-tooltip {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--charcoal);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 5px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 100;
+  }
+
+  .nav-tab .tab-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -5px; left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid var(--border);
+  }
+
+  .nav-tab:hover .tab-tooltip { display: block; }
+
+  body { padding-top: 68px; }
+
+  @media (max-width: 480px) {
+    .course-nav-brand { font-size: 9px; letter-spacing: 0.12em; padding: 7px 16px 5px; }
+    .course-nav-tabs { gap: 3px; padding: 5px 8px; }
+    .nav-tab a { font-size: 10px; padding: 4px 8px; }
   }
 </style>
 </head>
@@ -567,13 +641,32 @@
 
 <!-- COURSE NAV -->
 <nav class="course-nav">
-  <a href="index.html" class="active">Day 1 認識股票</a>
-  <a href="stock-course-day2.html">Day 2 選股方向</a>
-  <a href="stock-course-day3.html">Day 3 基本面</a>
-  <a class="locked">Day 4 技術面</a>
-  <a class="locked">Day 5 籌碼面</a>
-  <a class="locked">Day 6 實戰選股</a>
-  <a class="locked">Day 7 建立系統</a>
+  <div class="course-nav-brand">股票小白養成計劃</div>
+  <div class="course-nav-tabs">
+    <div class="nav-tab">
+      <a href="index.html" class="active">Day 1 認識股票</a>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day2.html">D2</a>
+      <span class="tab-tooltip">Day 2 選股方向</span>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day3.html">D3</a>
+      <span class="tab-tooltip">Day 3 基本面</span>
+    </div>
+    <div class="nav-tab">
+      <a class="disabled">D4</a>
+    </div>
+    <div class="nav-tab">
+      <a class="disabled">D5</a>
+    </div>
+    <div class="nav-tab">
+      <a class="disabled">D6</a>
+    </div>
+    <div class="nav-tab">
+      <a class="disabled">D7</a>
+    </div>
+  </div>
 </nav>
 
 <!-- TICKER -->
