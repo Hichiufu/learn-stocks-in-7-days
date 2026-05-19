@@ -570,9 +570,65 @@
     .progress-bar-wrap { padding: 0 24px; }
     .masthead-meta { flex-wrap: wrap; gap: 16px; }
   }
+
+  /* === COURSE NAV === */
+  .course-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #2a2a2a;
+    padding: 10px 24px;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .course-nav a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid #2a2a2a;
+    color: #666;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .course-nav a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .course-nav a.active {
+    background: var(--accent);
+    color: #0a0a0a;
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+
+  .course-nav a.locked {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
+
+<!-- COURSE NAV -->
+<nav class="course-nav">
+  <a href="index.html">Day 1 認識股票</a>
+  <a href="stock-course-day2.html" class="active">Day 2 選股方向</a>
+  <a href="stock-course-day3.html">Day 3 基本面</a>
+  <a class="locked">Day 4 技術面</a>
+  <a class="locked">Day 5 籌碼面</a>
+  <a class="locked">Day 6 實戰選股</a>
+  <a class="locked">Day 7 建立系統</a>
+</nav>
 
 <!-- MASTHEAD -->
 <header class="masthead">

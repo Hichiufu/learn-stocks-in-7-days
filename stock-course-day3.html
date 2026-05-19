@@ -614,9 +614,66 @@
     .prog-bar { padding: 12px 24px; }
     .hero::after { font-size: 100px; }
   }
+
+  /* === COURSE NAV === */
+  .course-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(10,14,12,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .course-nav a {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .course-nav a:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .course-nav a.active {
+    background: var(--green);
+    color: #0A0E0C;
+    border-color: var(--green);
+    font-weight: 700;
+  }
+
+  .course-nav a.locked {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
+
+<!-- COURSE NAV -->
+<nav class="course-nav">
+  <a href="index.html">Day 1 認識股票</a>
+  <a href="stock-course-day2.html">Day 2 選股方向</a>
+  <a href="stock-course-day3.html" class="active">Day 3 基本面</a>
+  <a class="locked">Day 4 技術面</a>
+  <a class="locked">Day 5 籌碼面</a>
+  <a class="locked">Day 6 實戰選股</a>
+  <a class="locked">Day 7 建立系統</a>
+</nav>
 
 <!-- HERO -->
 <header class="hero">

@@ -516,9 +516,65 @@
     .term-key { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
     .term-val { padding-left: 0; padding-top: 8px; }
   }
+
+  /* === COURSE NAV === */
+  .course-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(13,13,13,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .course-nav a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .course-nav a:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .course-nav a.active {
+    background: var(--gold);
+    color: var(--dark);
+    border-color: var(--gold);
+    font-weight: 700;
+  }
+
+  .course-nav a.locked {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
+
+<!-- COURSE NAV -->
+<nav class="course-nav">
+  <a href="index.html" class="active">Day 1 認識股票</a>
+  <a href="stock-course-day2.html">Day 2 選股方向</a>
+  <a href="stock-course-day3.html">Day 3 基本面</a>
+  <a class="locked">Day 4 技術面</a>
+  <a class="locked">Day 5 籌碼面</a>
+  <a class="locked">Day 6 實戰選股</a>
+  <a class="locked">Day 7 建立系統</a>
+</nav>
 
 <!-- TICKER -->
 <div class="ticker-tape">
