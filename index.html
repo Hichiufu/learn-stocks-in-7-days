@@ -53,6 +53,21 @@
     pointer-events: none;
   }
 
+  .ticker-tape {
+    position: absolute;
+    top: 0;
+    width: 200%;
+    background: var(--gold);
+    color: var(--dark);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 0;
+    white-space: nowrap;
+    animation: ticker 18s linear infinite;
+    letter-spacing: 0.05em;
+    z-index: 10;
+  }
 
   @keyframes ticker {
     0% { transform: translateX(0); }
@@ -94,7 +109,14 @@
     animation: fadeUp 0.8s ease 0.2s both;
   }
 
-
+  .week-nav {
+    display: flex;
+    gap: 8px;
+    margin-top: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
 
   .day-pill {
     font-family: 'Space Mono', monospace;
@@ -647,6 +669,10 @@
   </div>
 </nav>
 
+<!-- TICKER -->
+<div class="ticker-tape">
+  台積電 +2.3% ▲ &nbsp;&nbsp; 鴻海 -0.8% ▼ &nbsp;&nbsp; 聯發科 +1.5% ▲ &nbsp;&nbsp; 台達電 +0.4% ▲ &nbsp;&nbsp; 中華電 -0.2% ▼ &nbsp;&nbsp; 國泰金 +1.1% ▲ &nbsp;&nbsp; 富邦金 +0.7% ▲ &nbsp;&nbsp; 台積電 +2.3% ▲ &nbsp;&nbsp; 鴻海 -0.8% ▼ &nbsp;&nbsp; 聯發科 +1.5% ▲ &nbsp;&nbsp; 台達電 +0.4% ▲ &nbsp;&nbsp; 中華電 -0.2% ▼ &nbsp;&nbsp; 國泰金 +1.1% ▲ &nbsp;&nbsp; 富邦金 +0.7% ▲ &nbsp;&nbsp;
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -657,6 +683,15 @@
   </h1>
   <p class="hero-sub">從零開始，用最簡單的語言，帶你走進一般人覺得很難懂、其實一點都不難的股票世界。</p>
 
+  <div class="week-nav">
+    <div class="day-pill active">Day 1 認識股票</div>
+    <div class="day-pill">Day 2 選股方向</div>
+    <div class="day-pill">Day 3 基本面</div>
+    <div class="day-pill">Day 4 技術面</div>
+    <div class="day-pill">Day 5 籌碼面</div>
+    <div class="day-pill">Day 6 實戰選股</div>
+    <div class="day-pill">Day 7 建立系統</div>
+  </div>
 </section>
 
 <!-- PROGRESS -->
