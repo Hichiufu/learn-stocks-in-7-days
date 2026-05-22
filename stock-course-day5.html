@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>股票小白養成計劃 — 第五天</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E83B3B;
+    --green: #1DB954;
+    --gold: #F5C842;
+    --dark: #0D0D0D;
+    --charcoal: #1A1A1A;
+    --card: #222222;
+    --border: #333333;
+    --text: #F0EDE8;
+    --muted: #888888;
+    --accent: #F5C842;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    line-height: 1.8;
+    overflow-x: hidden;
+    padding-top: 68px;
+  }
+
+  /* === COURSE NAV === */
+  .course-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9999;
+    background: rgba(13,13,13,0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .course-nav-brand {
+    text-align: center;
+    padding: 8px 24px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em;
+    color: var(--muted); text-transform: uppercase;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .course-nav-tabs {
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px; padding: 6px 16px; overflow: hidden;
+  }
+  .nav-tab { position: relative; flex-shrink: 0; }
+  .nav-tab a {
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    padding: 5px 12px; border-radius: 100px;
+    border: 1px solid var(--border); color: var(--muted);
+    letter-spacing: 0.05em; text-decoration: none;
+    transition: all 0.2s; display: block; white-space: nowrap;
+  }
+  .nav-tab a:hover { border-color: var(--gold); color: var(--gold); }
+  .nav-tab a.active { background: var(--gold); color: var(--dark); border-color: var(--gold); font-weight: 700; }
+  .nav-tab a.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+  .nav-tab .tab-tooltip {
+    display: none; position: absolute;
+    top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    background: var(--charcoal); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em;
+    padding: 5px 12px; border-radius: 4px; white-space: nowrap; z-index: 100;
+  }
+  .nav-tab .tab-tooltip::before {
+    content: ''; position: absolute;
+    top: -5px; left: 50%; transform: translateX(-50%);
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-bottom: 5px solid var(--border);
+  }
+  .nav-tab:hover .tab-tooltip { display: block; }
+
+  /* === HERO === */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center;
+    position: relative; padding: 60px 24px;
+    background: radial-gradient(ellipse at 50% 60%, #1a1200 0%, #0D0D0D 70%);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(245,200,66,0.03) 60px, rgba(245,200,66,0.03) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(245,200,66,0.03) 60px, rgba(245,200,66,0.03) 61px);
+    pointer-events: none;
+  }
+  .ticker-tape {
+    position: absolute; top: 0; width: 200%;
+    background: var(--gold); color: var(--dark);
+    font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+    padding: 6px 0; white-space: nowrap;
+    animation: ticker 18s linear infinite; letter-spacing: 0.05em; z-index: 10;
+  }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .badge {
+    display: inline-block; border: 1px solid var(--gold); color: var(--gold);
+    font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.15em;
+    padding: 6px 18px; border-radius: 2px; margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(2.8rem, 8vw, 6rem);
+    font-weight: 900; line-height: 1.1; letter-spacing: -0.02em;
+    animation: fadeUp 0.8s ease 0.1s both;
+  }
+  .hero h1 span { color: var(--gold); display: block; }
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--muted);
+    margin-top: 24px; max-width: 560px;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  /* Money flow bars in hero */
+  .hero-flow {
+    margin-top: 40px; width: 100%; max-width: 380px;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+  .flow-label-top {
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 0.15em; color: var(--muted); margin-bottom: 12px; text-align: left;
+  }
+  .flow-row {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+  }
+  .flow-name {
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 0.05em; color: var(--muted); width: 56px; flex-shrink: 0; text-align: right;
+  }
+  .flow-bar-bg {
+    flex: 1; height: 6px;
+    background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden;
+  }
+  .flow-bar { height: 100%; border-radius: 3px; transition: width 1.5s ease; }
+  .flow-pct {
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    width: 36px; text-align: right; flex-shrink: 0;
+  }
+
+  .hero-meta {
+    display: flex; gap: 32px; margin-top: 40px;
+    flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+  .hero-meta-item { text-align: center; }
+  .hero-meta-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+  .hero-meta-val { font-family: 'Noto Serif TC', serif; font-size: 1rem; font-weight: 700; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* === PROGRESS === */
+  .progress-section { background: var(--charcoal); padding: 28px 24px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .progress-inner { max-width: 800px; margin: 0 auto; display: flex; align-items: center; gap: 20px; }
+  .progress-text { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+  .progress-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill { width: 0; height: 100%; background: linear-gradient(90deg, var(--gold), #ffdd44); border-radius: 3px; transition: width 1.2s ease; }
+
+  /* === SECTION === */
+  .section { max-width: 800px; margin: 0 auto; padding: 80px 24px; }
+  .section-label { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; }
+  .section h2 { font-family: 'Noto Serif TC', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.3; margin-bottom: 24px; }
+  .section p { color: #C8C4BC; font-size: 1.05rem; margin-bottom: 16px; }
+
+  /* === DIVIDERS === */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+  .section-divider { display: flex; align-items: center; gap: 16px; max-width: 800px; margin: 0 auto; padding: 0 24px; }
+  .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .section-divider span { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; white-space: nowrap; }
+
+  /* === ANALOGY === */
+  .analogy {
+    background: linear-gradient(135deg, #1a1200, #1a1500);
+    border: 1px solid #3a3000; border-radius: 12px;
+    padding: 32px; margin: 32px 0; position: relative;
+  }
+  .analogy::before { content: '💡 比喻'; font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--gold); position: absolute; top: -10px; left: 20px; background: var(--dark); padding: 0 8px; }
+  .analogy p { color: #D8D4CC; font-size: 1.05rem; margin: 0; }
+
+  /* === WARN === */
+  .warn { background: rgba(232,59,59,0.06); border: 1px solid rgba(232,59,59,0.2); border-left: 3px solid var(--red); border-radius: 0 8px 8px 0; padding: 20px 24px; margin: 24px 0; position: relative; }
+  .warn::before { content: '⚠ 注意'; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--red); display: block; margin-bottom: 8px; }
+  .warn p { font-size: 0.95rem; color: #C8C4BC; margin: 0; }
+
+  /* === CHECKLIST === */
+  .checklist { list-style: none; margin: 16px 0; }
+  .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.97rem; color: #C8C4BC; }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box { width: 20px; height: 20px; border: 1.5px solid var(--border); border-radius: 4px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+  .check-box.done { background: var(--green); border-color: var(--green); }
+  .check-box.done::after { content: '✓'; color: white; font-size: 12px; font-weight: 700; }
+
+  /* === PLAYERS GRID === */
+  .players-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 28px 0; }
+  .player-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 28px 24px; transition: border-color 0.2s; }
+  .player-card:hover { border-color: var(--gold); }
+  .player-icon { font-size: 2rem; margin-bottom: 12px; }
+  .player-card h3 { font-family: 'Noto Serif TC', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+  .player-badge {
+    display: inline-block; font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 0.1em; padding: 3px 10px; border-radius: 100px;
+    margin-bottom: 10px;
+  }
+  .badge-smart { background: rgba(245,200,66,0.12); color: var(--gold); border: 1px solid rgba(245,200,66,0.3); }
+  .badge-emotion { background: rgba(136,136,136,0.12); color: var(--muted); border: 1px solid rgba(136,136,136,0.3); }
+  .player-card p { font-size: 0.88rem; color: #B8B4AC; margin: 0; line-height: 1.65; }
+
+  /* === CHIP TABLE === */
+  .chip-table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 28px 0; }
+  .chip-table-head { background: var(--charcoal); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+  .chip-table-title { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--gold); }
+  .chip-table-sub { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
+  table.chip-table { width: 100%; border-collapse: collapse; }
+  .chip-table th { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--gold); padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); background: rgba(245,200,66,0.04); }
+  .chip-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); color: #C8C4BC; font-size: 0.88rem; vertical-align: top; }
+  .chip-table tr:last-child td { border-bottom: none; }
+  .chip-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .chip-table td:first-child { color: var(--text); font-weight: 500; }
+
+  /* === STOCK CHIP CARDS === */
+  .stock-chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 28px 0; }
+  .sc-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+  .sc-card:hover { border-color: var(--gold); }
+  .sc-head { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--charcoal); }
+  .sc-ticker { font-family: 'Space Mono', monospace; font-size: 1.1rem; font-weight: 700; color: var(--text); }
+  .sc-name { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .sc-body { padding: 18px 20px; }
+  .sc-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+  .sc-row:last-child { border-bottom: none; }
+  .sc-label { color: var(--muted); }
+  .sc-val { font-family: 'Space Mono', monospace; font-size: 0.88rem; }
+  .sc-note { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+  .bull { color: var(--green); }
+  .bear { color: var(--red); }
+  .neut { color: var(--gold); }
+
+  .chip-tag {
+    display: inline-block; font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em;
+    padding: 3px 10px; border-radius: 100px;
+  }
+  .tag-bull { background: rgba(29,185,84,0.12); color: var(--green); border: 1px solid rgba(29,185,84,0.3); }
+  .tag-bear { background: rgba(232,59,59,0.12); color: var(--red); border: 1px solid rgba(232,59,59,0.3); }
+  .tag-neutral { background: rgba(245,200,66,0.1); color: var(--gold); border: 1px solid rgba(245,200,66,0.25); }
+
+  /* === SIGNAL GRID === */
+  .signal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
+  .sig-card { border-radius: 10px; padding: 24px; border: 1px solid; }
+  .sig-card.buy { background: rgba(29,185,84,0.05); border-color: rgba(29,185,84,0.25); }
+  .sig-card.sell { background: rgba(232,59,59,0.05); border-color: rgba(232,59,59,0.25); }
+  .sig-title { font-family: 'Noto Serif TC', serif; font-size: 1rem; font-weight: 700; margin-bottom: 14px; }
+  .sig-card.buy .sig-title { color: var(--green); }
+  .sig-card.sell .sig-title { color: var(--red); }
+  .sig-card ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .sig-card li { font-size: 0.88rem; color: #C8C4BC; line-height: 1.55; padding-left: 18px; position: relative; }
+  .sig-card.buy li::before { content: '↑'; position: absolute; left: 0; color: var(--green); }
+  .sig-card.sell li::before { content: '↓'; position: absolute; left: 0; color: var(--red); }
+
+  /* === SOURCE GRID === */
+  .source-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 24px 0; }
+  .src-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px 18px; transition: all 0.2s; }
+  .src-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .src-icon { font-size: 1.5rem; margin-bottom: 10px; }
+  .src-card h4 { font-family: 'Noto Serif TC', serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+  .src-card p { font-size: 0.82rem; color: var(--muted); margin: 0; line-height: 1.55; }
+
+  /* === FULL ANALYSIS BOX === */
+  .full-analysis {
+    background: var(--charcoal); border: 1px solid var(--border);
+    border-radius: 12px; padding: 40px; margin: 40px 0; position: relative;
+  }
+  .full-analysis::before { content: 'SOFI — 三面向完整分析報告'; font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--gold); position: absolute; top: -10px; left: 20px; background: var(--dark); padding: 0 8px; }
+  .full-analysis h3 { font-family: 'Noto Serif TC', serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 28px; }
+  .fa-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+  .fa-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 18px 16px; }
+  .fa-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 8px; }
+  .fa-val { font-family: 'Noto Serif TC', serif; font-size: 1.3rem; margin-bottom: 6px; }
+  .fa-note { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+  .fa-verdict { background: rgba(245,200,66,0.06); border: 1px solid rgba(245,200,66,0.2); border-radius: 8px; padding: 20px 24px; }
+  .fa-verdict-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 10px; }
+  .fa-verdict p { color: #C8C4BC; margin: 0; font-size: 0.95rem; line-height: 1.75; }
+
+  /* === HOMEWORK === */
+  .homework { background: linear-gradient(135deg, #0a1a0a, #0d1f0d); border: 1px solid #1a3a1a; border-radius: 12px; padding: 36px; margin: 48px 0 0; position: relative; }
+  .homework::before { content: '📝 今日作業'; font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--green); position: absolute; top: -10px; left: 20px; background: var(--dark); padding: 0 8px; }
+  .homework h3 { font-family: 'Noto Serif TC', serif; font-size: 1.4rem; color: var(--green); margin-bottom: 16px; }
+  .hw-item { display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); align-items: flex-start; }
+  .hw-item:last-child { border-bottom: none; }
+  .hw-num { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--green); background: rgba(29,185,84,0.1); border: 1px solid rgba(29,185,84,0.25); border-radius: 4px; padding: 4px 10px; flex-shrink: 0; margin-top: 2px; }
+  .hw-item p { font-size: 0.97rem; color: #C8C4BC; margin: 0; line-height: 1.7; }
+  .hw-item strong { color: var(--text); }
+
+  /* === FOOTER === */
+  .footer { text-align: center; padding: 60px 24px; border-top: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; }
+  .footer span { color: var(--gold); }
+
+  /* === SCROLL REVEAL === */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* === RWD === */
+  @media (max-width: 600px) {
+    .fa-grid { grid-template-columns: 1fr; }
+    .signal-grid { grid-template-columns: 1fr; }
+    .chip-table { font-size: 0.82rem; }
+    .chip-table th, .chip-table td { padding: 10px 12px; }
+  }
+  @media (max-width: 480px) {
+    .course-nav-brand { font-size: 9px; letter-spacing: 0.12em; padding: 7px 16px 5px; }
+    .course-nav-tabs { gap: 3px; padding: 5px 8px; }
+    .nav-tab a { font-size: 10px; padding: 4px 8px; }
+    .section { padding: 56px 20px; }
+    .hero h1 { font-size: clamp(2.2rem, 10vw, 4rem); }
+    .hero-meta { gap: 16px; }
+    .hero-flow { display: none; }
+    .card { padding: 20px; }
+    .homework { padding: 28px 20px; }
+    .full-analysis { padding: 28px 20px; }
+    .players-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COURSE NAV -->
+<nav class="course-nav">
+  <div class="course-nav-brand">股票小白養成計劃</div>
+  <div class="course-nav-tabs">
+    <div class="nav-tab">
+      <a href="index.html">D1</a>
+      <span class="tab-tooltip">Day 1 認識股票</span>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day2.html">D2</a>
+      <span class="tab-tooltip">Day 2 選股方向</span>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day3.html">D3</a>
+      <span class="tab-tooltip">Day 3 基本面</span>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day4.html">D4</a>
+      <span class="tab-tooltip">Day 4 技術面</span>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day5.html" class="active">Day 5 籌碼面</a>
+    </div>
+    <div class="nav-tab"><a class="disabled">D6</a></div>
+    <div class="nav-tab"><a class="disabled">D7</a></div>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-tape">
+  台積電 +2.3% ▲ &nbsp;&nbsp; NVDA +1.8% ▲ &nbsp;&nbsp; Nokia +3.2% ▲ &nbsp;&nbsp; SOFI +4.1% ▲ &nbsp;&nbsp; TSMC +2.1% ▲ &nbsp;&nbsp; AMZN +0.9% ▲ &nbsp;&nbsp; 鴻海 -0.8% ▼ &nbsp;&nbsp; AMD -0.5% ▼ &nbsp;&nbsp; ASML +1.3% ▲ &nbsp;&nbsp; 聯發科 +1.5% ▲ &nbsp;&nbsp; 台達電 +0.4% ▲ &nbsp;&nbsp; 中華電 -0.2% ▼ &nbsp;&nbsp; 國泰金 +1.1% ▲ &nbsp;&nbsp;
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">股票小白養成計劃 · 七日課程</div>
+  <h1>
+    第五天
+    <span>跟著大戶的錢走</span>
+  </h1>
+  <p class="hero-sub">基本面選出好公司，技術面找到好時機，籌碼面告訴你——那個時機點上，到底是聰明錢在買、還是散戶在接盤？</p>
+
+  <!-- Money flow visual -->
+  <div class="hero-flow">
+    <div class="flow-label-top">市場資金分布示意</div>
+    <div class="flow-row">
+      <div class="flow-name">法人機構</div>
+      <div class="flow-bar-bg"><div class="flow-bar" style="width:72%; background: var(--gold);"></div></div>
+      <div class="flow-pct" style="color:var(--gold)">72%</div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-name">外資</div>
+      <div class="flow-bar-bg"><div class="flow-bar" style="width:45%; background: #E8834A;"></div></div>
+      <div class="flow-pct" style="color:#E8834A">45%</div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-name">投信</div>
+      <div class="flow-bar-bg"><div class="flow-bar" style="width:15%; background: var(--green);"></div></div>
+      <div class="flow-pct" style="color:var(--green)">15%</div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-name">自營商</div>
+      <div class="flow-bar-bg"><div class="flow-bar" style="width:12%; background: #4A9EFF;"></div></div>
+      <div class="flow-pct" style="color:#4A9EFF">12%</div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-name">散戶</div>
+      <div class="flow-bar-bg"><div class="flow-bar" style="width:28%; background: var(--muted);"></div></div>
+      <div class="flow-pct" style="color:var(--muted)">28%</div>
+    </div>
+  </div>
+
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">今日主題</div>
+      <div class="hero-meta-val">籌碼面 × 法人追蹤</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">學習時間</div>
+      <div class="hero-meta-val">約 18 分鐘</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">難度</div>
+      <div class="hero-meta-val">★★★☆☆</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<div class="progress-section">
+  <div class="progress-inner">
+    <div class="progress-text">課程進度</div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text">5 / 7 天</div>
+  </div>
+</div>
+
+<!-- 今天學什麼 -->
+<div class="section reveal">
+  <div class="section-label">Today's Lesson</div>
+  <h2>今天你會學到什麼？</h2>
+  <p>你學了基本面（公司好不好）和技術面（什麼時候買），但還缺最後一塊：<strong style="color:var(--text)">誰在買？誰在賣？</strong></p>
+  <ul class="checklist">
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>市場上的三種人：法人大戶、鯨魚、散戶的差異</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>四個關鍵籌碼指標：機構持股、空頭比例、內部人交易</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>軋空（Short Squeeze）是什麼，為什麼風險高</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Nokia、TSMC、SoFi 的真實籌碼數據比較</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>SoFi 三面向（基本面＋技術面＋籌碼面）完整分析</span></li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<!-- Why Chips -->
+<div class="section reveal">
+  <div class="section-label">Why It Matters</div>
+  <h2>🔍 為什麼要看籌碼？</h2>
+  <p>你學了基本面（公司好不好）和技術面（什麼時候買），但還缺最後一塊：<strong style="color:var(--text)">誰在買？誰在賣？</strong></p>
+
+  <div class="analogy">
+    <p>
+      想像一場拍賣會，有一件你不確定值多少錢的古董。<br><br>
+      如果你看到幾個知名的古董專家在競相出價——那你知道這東西應該有價值。<br>
+      如果是一群不懂行的遊客在哄搶——那你就要小心了，可能只是被氣氛帶著走。<br><br>
+      <strong>股票市場也一樣。大戶（法人機構）就是那幾個「行家」，他們有研究團隊、有內部資源，他們的買賣動作值得追蹤。</strong>
+    </p>
+  </div>
+</div>
+
+<div class="section-divider"><span>UNIT 01 — 市場上有哪些玩家</span></div>
+
+<!-- 玩家 -->
+<div class="section reveal">
+  <div class="section-label">Market Players</div>
+  <h2>🏦 市場上的三種人</h2>
+
+  <div class="players-grid">
+    <div class="player-card">
+      <div class="player-icon">🏦</div>
+      <h3>法人機構（大戶）</h3>
+      <div class="player-badge badge-smart">聰明錢</div>
+      <p>退休基金、共同基金、對沖基金、保險公司。有龐大研究團隊、資金規模巨大。他們的動向是最重要的參考指標。美股叫 Institutional Investors，台股叫外資／投信／自營商。</p>
+    </div>
+    <div class="player-card">
+      <div class="player-icon">🐋</div>
+      <h3>鯨魚（超級大戶）</h3>
+      <div class="player-badge badge-smart">聰明錢</div>
+      <p>巴菲特的波克夏、索羅斯基金等。每季必須向 SEC 申報持股（13F 報告），可以追蹤他們在買什麼。雖然資訊有延遲（45天），但方向很有參考價值。</p>
+    </div>
+    <div class="player-card">
+      <div class="player-icon">👤</div>
+      <h3>散戶（你和我）</h3>
+      <div class="player-badge badge-emotion">情緒錢</div>
+      <p>個人投資者。資金小、資訊不對稱、容易被情緒左右。散戶集體「買爆」某支股票，有時反而是賣出訊號——因為大戶在趁機出貨。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"><span>UNIT 02 — 籌碼面的關鍵指標</span></div>
+
+<!-- 指標 -->
+<div class="section reveal">
+  <div class="section-label">Key Chip Metrics</div>
+  <h2>📊 四個籌碼面指標</h2>
+  <p>你不需要全部都看，但這四個是最常用、最有效的：</p>
+
+  <div class="chip-table-wrap">
+    <div class="chip-table-head">
+      <span class="chip-table-title">籌碼面指標速查</span>
+      <span class="chip-table-sub">美股為主</span>
+    </div>
+    <table class="chip-table">
+      <thead>
+        <tr>
+          <th>指標名稱</th>
+          <th>白話意思</th>
+          <th>在哪裡找</th>
+          <th>怎麼解讀</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>機構持股比例<br><span style="font-size:0.78rem; color:var(--muted); font-family:'Space Mono',monospace;">Institutional Ownership</span></td>
+          <td>有多少股票被法人持有</td>
+          <td>Yahoo Finance → Holders</td>
+          <td>&gt;60% 且持續增加是好訊號；突然大量賣出要注意</td>
+        </tr>
+        <tr>
+          <td>機構近期買賣<br><span style="font-size:0.78rem; color:var(--muted); font-family:'Space Mono',monospace;">Recent Inst. Activity</span></td>
+          <td>上季法人是淨買入還是淨賣出</td>
+          <td>Yahoo Finance → Holders</td>
+          <td>淨買入（買多賣少）→ 機構看好；淨賣出 → 機構在跑</td>
+        </tr>
+        <tr>
+          <td>空頭比例<br><span style="font-size:0.78rem; color:var(--muted); font-family:'Space Mono',monospace;">Short Interest %</span></td>
+          <td>有多少人在「放空」這支股票</td>
+          <td>Yahoo Finance → Statistics</td>
+          <td>&gt;20% 代表市場很悲觀；但若突然反彈可能觸發軋空</td>
+        </tr>
+        <tr>
+          <td>內部人持股<br><span style="font-size:0.78rem; color:var(--muted); font-family:'Space Mono',monospace;">Insider Ownership</span></td>
+          <td>公司高層自己持有多少股票</td>
+          <td>Yahoo Finance → Holders</td>
+          <td>高層買自家股票 → 對公司有信心；賣出 → 可能有隱憂</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section-divider"><span>UNIT 03 — 軋空是什麼</span></div>
+
+<!-- 軋空 -->
+<div class="section reveal">
+  <div class="section-label">Short Squeeze</div>
+  <h2>💥 軋空：空頭的噩夢</h2>
+  <p>放空（Short Selling）是一種「賭股票會跌」的操作——先借股票來賣，之後股價跌了再買回來，賺中間差價。但如果股票不跌反漲，放空者就必須趕快買回股票止損，這個搶著買的動作會把股價推得更高——這就叫「軋空（Short Squeeze）」。</p>
+
+  <div class="analogy">
+    <p>
+      空頭比例很高的股票 = 有很多人在等它跌。<br><br>
+      如果股價偏偏不跌反漲，這些人會恐慌性地搶著買回來止損，反而把股價越推越高，形成雪球效應。<br><br>
+      <strong>GameStop 在 2021 年的暴漲，就是最經典的軋空案例——散戶集體買進，把大量放空的對沖基金逼到崩潰。</strong>
+    </p>
+  </div>
+
+  <div class="warn">
+    <p>軋空漲幅可以很誇張，但通常是短期現象，不代表公司基本面改善。追軋空行情風險極高，除非你能判斷時機，否則小白不要碰。</p>
+  </div>
+</div>
+
+<div class="section-divider"><span>UNIT 04 — 真實數據：你選的三支股</span></div>
+
+<!-- 三支股籌碼 -->
+<div class="section reveal">
+  <div class="section-label">Real Chip Data</div>
+  <h2>📈 Nokia、TSMC、SoFi 的籌碼面</h2>
+  <p>用今天學的框架，來看你這幾天研究的三支股票：</p>
+
+  <div class="stock-chips">
+    <div class="sc-card">
+      <div class="sc-head">
+        <div>
+          <div class="sc-ticker">NOK</div>
+          <div class="sc-name">Nokia Oyj</div>
+        </div>
+        <span class="chip-tag tag-neutral">⚠ 觀察</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row"><span class="sc-label">機構持股比例</span><span class="sc-val neut">~8%</span></div>
+        <div class="sc-row"><span class="sc-label">機構近期動向</span><span class="sc-val neut">小幅增加</span></div>
+        <div class="sc-row"><span class="sc-label">空頭比例</span><span class="sc-val bear">~3.5%</span></div>
+        <div class="sc-row"><span class="sc-label">內部人持股</span><span class="sc-val neut">低</span></div>
+        <div class="sc-note">機構持股只有 8% 偏低，代表大型法人對 Nokia 的興趣不高。空頭比例不高（3.5%），沒有明顯做空壓力，但也沒有強力的機構買盤支撐。籌碼面中性偏弱。</div>
+      </div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-head">
+        <div>
+          <div class="sc-ticker">TSM</div>
+          <div class="sc-name">台積電 ADR</div>
+        </div>
+        <span class="chip-tag tag-bull">✓ 強勢</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row"><span class="sc-label">機構持股比例</span><span class="sc-val bull">~17%</span></div>
+        <div class="sc-row"><span class="sc-label">機構近期動向</span><span class="sc-val bull">持續買入</span></div>
+        <div class="sc-row"><span class="sc-label">空頭比例</span><span class="sc-val bull">~0.7%</span></div>
+        <div class="sc-row"><span class="sc-label">巴菲特持股</span><span class="sc-val bull">曾大量買入</span></div>
+        <div class="sc-note">空頭比例極低（0.7%），幾乎沒有人敢放空台積電。機構持續買入，市場幾乎沒有悲觀情緒。籌碼面是三者中最健康的。</div>
+      </div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-head">
+        <div>
+          <div class="sc-ticker">SOFI</div>
+          <div class="sc-name">SoFi Technologies</div>
+        </div>
+        <span class="chip-tag tag-bull">↑ 改善中</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-row"><span class="sc-label">機構持股比例</span><span class="sc-val bull">~55%</span></div>
+        <div class="sc-row"><span class="sc-label">機構近期動向</span><span class="sc-val bull">淨買入</span></div>
+        <div class="sc-row"><span class="sc-label">空頭比例</span><span class="sc-val bear">~8%</span></div>
+        <div class="sc-row"><span class="sc-label">內部人持股</span><span class="sc-val bull">CEO 持續持有</span></div>
+        <div class="sc-note">機構持股 55% 且近期淨買入，是正面訊號。空頭比例 8% 稍高，代表還有一部分市場看空——但如果股價持續上漲，這些空頭被迫買回，可能觸發小型軋空。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"><span>UNIT 05 — 籌碼訊號速查</span></div>
+
+<!-- 訊號 -->
+<div class="section reveal">
+  <div class="section-label">Signal Guide</div>
+  <h2>🚦 看到什麼籌碼訊號，怎麼解讀？</h2>
+
+  <div class="signal-grid">
+    <div class="sig-card buy">
+      <div class="sig-title">🟢 偏多訊號</div>
+      <ul>
+        <li>機構持股比例 &gt;50% 且持續增加</li>
+        <li>上季機構淨買入（買 &gt; 賣）</li>
+        <li>知名大戶（巴菲特等）新增持股</li>
+        <li>空頭比例低（&lt;5%），市場信心高</li>
+        <li>公司高層近期在買自家股票</li>
+        <li>多家機構上調目標價</li>
+      </ul>
+    </div>
+    <div class="sig-card sell">
+      <div class="sig-title">🔴 偏空訊號</div>
+      <ul>
+        <li>機構近期大量賣出，持股比例下降</li>
+        <li>知名大戶清倉或大幅減持</li>
+        <li>空頭比例高（&gt;15%），市場大量做空</li>
+        <li>公司高層集中賣出自家股票</li>
+        <li>多家機構下調目標價或評級</li>
+        <li>散戶熱度極高（社群瘋傳）但機構沒跟</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"><span>UNIT 06 — 去哪裡找籌碼資料</span></div>
+
+<!-- 資源 -->
+<div class="section reveal">
+  <div class="section-label">Where To Find</div>
+  <h2>🔗 免費工具，5 分鐘查完</h2>
+
+  <div class="source-grid">
+    <div class="src-card">
+      <div class="src-icon">📊</div>
+      <h4>Yahoo Finance</h4>
+      <p>搜尋股票 → Holders 頁面。可以看機構持股比例、近期買賣、內部人交易，最方便。</p>
+    </div>
+    <div class="src-card">
+      <div class="src-icon">🔍</div>
+      <h4>Fintel.io</h4>
+      <p>專門追蹤機構持股變動，可以看哪些大基金在買這支股票，免費版夠用。</p>
+    </div>
+    <div class="src-card">
+      <div class="src-icon">🐋</div>
+      <h4>Whale Wisdom</h4>
+      <p>追蹤知名大戶的 13F 申報，看巴菲特、索羅斯等人最新持股變動。</p>
+    </div>
+    <div class="src-card">
+      <div class="src-icon">📉</div>
+      <h4>Short Interest（美股）</h4>
+      <p>在 Yahoo Finance → Statistics → Short Interest，查空頭比例和軋空天數。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"><span>UNIT 07 — SoFi 三面向完整分析</span></div>
+
+<!-- SoFi 完整 -->
+<div class="section reveal">
+  <div class="full-analysis">
+    <h3>你這幾天研究的成果總結</h3>
+
+    <div class="fa-grid">
+      <div class="fa-item">
+        <div class="fa-label">基本面</div>
+        <div class="fa-val" style="color:var(--gold)">⭐⭐⭐⭐</div>
+        <div class="fa-note">營收年增 41%、EPS 持續成長、連續 GAAP 獲利、2026 EPS 目標 $0.60。現金流負但屬銀行正常特性，壞帳率健康 2%。</div>
+      </div>
+      <div class="fa-item">
+        <div class="fa-label">技術面</div>
+        <div class="fa-val" style="color:var(--gold)">⭐⭐⭐</div>
+        <div class="fa-note">MA5 與 MA20 即將黃金交叉、RSI 43 中性偏低、MACD 負但差距縮小。趨勢待確認，等交叉確認再進。</div>
+      </div>
+      <div class="fa-item">
+        <div class="fa-label">籌碼面</div>
+        <div class="fa-val" style="color:var(--green)">⭐⭐⭐⭐</div>
+        <div class="fa-note">機構持股 55%、近期淨買入、CEO 持續持有。空頭 8% 偏高但可能成為軋空動力。整體偏正面。</div>
+      </div>
+    </div>
+
+    <div class="fa-verdict">
+      <div class="fa-verdict-label">📋 綜合結論</div>
+      <p>
+        SoFi 是一家基本面真實改善、機構認同度高的成長型金融科技股。目前股價 ~$15，低於基本面合理價 $22–25。<br><br>
+        <strong style="color:var(--text)">等待條件：</strong>MA5 確認穿越 MA20（黃金交叉）+ MACD 轉正，兩個技術訊號同時出現時，搭配籌碼面的機構持續買入，是相對安全的進場時機。<br><br>
+        <strong style="color:var(--text)">風險：</strong>科技平台業務因客戶流失下滑 27%，需追蹤是否改善。利率政策變化會直接影響放貸業務。
+      </p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- 今天學會了 -->
+<div class="section reveal">
+  <div class="section-label">Today's Key Takeaways</div>
+  <h2>今天學會了什麼？</h2>
+  <ul class="checklist">
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>籌碼面 = 看誰在買誰在賣，大戶動向比散戶更有參考價值</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>機構持股比例高且增加 → 聰明錢看好；突然大賣 → 要警惕</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>空頭比例高 + 股價反漲 → 可能觸發軋空，漲幅驚人但風險高</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>Yahoo Finance Holders 頁面 5 分鐘查完所有籌碼資料</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>SoFi 三面向分析：基本面強、技術面待確認、籌碼面正面</span></li>
+  </ul>
+</div>
+
+<!-- 作業 -->
+<div class="section reveal">
+  <div class="homework">
+    <h3>Day 5 作業：查三支股票的持股結構</h3>
+    <div class="hw-item">
+      <div class="hw-num">01</div>
+      <p>打開 <strong>Yahoo Finance</strong>，搜尋 <strong>SOFI</strong>，點選左側 <strong>Holders</strong> 頁面。記下：① 機構持股比例是多少？② 上季是淨買入還是淨賣出？③ 有哪幾家大機構是最大股東？</p>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">02</div>
+      <p>同樣查 <strong>NOK（Nokia）</strong>的 Holders 頁面。比較 Nokia 和 SoFi 的機構持股比例——差距大嗎？這個差距對你的投資判斷有什麼影響？</p>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">03</div>
+      <p>查 SOFI 的 <strong>Statistics 頁面</strong>，找到 <strong>Short % of Float</strong>（流通股空頭比例）。現在的空頭比例是多少？如果股價繼續上漲，你覺得會不會觸發軋空？</p>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">挑戰</div>
+      <p>（選做）綜合你這五天學的所有工具，對 <strong>SoFi（SOFI）</strong> 寫一份完整的三面向分析：<strong>基本面：</strong>公司有沒有在賺錢、成長趨勢如何；<strong>技術面：</strong>MA、RSI、MACD 目前各是什麼訊號；<strong>籌碼面：</strong>機構在買還是賣、空頭比例多高。最後寫下你的<strong>結論：你會買嗎？什麼條件下會買？</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>股票小白養成計劃 &nbsp;·&nbsp; <span>第五天完成！</span> &nbsp;·&nbsp; 明天：Day 6 — 實戰選股，把三面向綜合起來找你的第一支真實標的</p>
+  <p style="margin-top: 8px; font-size: 10px; color: #555;">⚠ 本課程為教育用途，不構成任何投資建議。投資一定有風險，入市前請審慎評估。</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  function toggleCheck(el) { el.classList.toggle('done'); }
+
+  setTimeout(() => { document.getElementById('progressFill').style.width = '71.4%'; }, 500);
+</script>
+</body>
+</html>
