@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>股票小白養成計劃 — 第七天・終章</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E83B3B;
+    --green: #1DB954;
+    --gold: #F5C842;
+    --dark: #0D0D0D;
+    --charcoal: #1A1A1A;
+    --card: #222222;
+    --border: #333333;
+    --text: #F0EDE8;
+    --muted: #888888;
+    --accent: #F5C842;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    line-height: 1.8;
+    overflow-x: hidden;
+    padding-top: 68px;
+  }
+
+  /* === COURSE NAV === */
+  .course-nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 9999; background: rgba(13,13,13,0.97);
+    backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+  }
+  .course-nav-brand {
+    text-align: center; padding: 8px 24px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .course-nav-tabs {
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px; padding: 6px 16px; overflow: hidden;
+  }
+  .nav-tab { position: relative; flex-shrink: 0; }
+  .nav-tab a {
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    padding: 5px 12px; border-radius: 100px;
+    border: 1px solid var(--border); color: var(--muted);
+    letter-spacing: 0.05em; text-decoration: none;
+    transition: all 0.2s; display: block; white-space: nowrap;
+  }
+  .nav-tab a:hover { border-color: var(--gold); color: var(--gold); }
+  .nav-tab a.active { background: var(--gold); color: var(--dark); border-color: var(--gold); font-weight: 700; }
+  .nav-tab a.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+  .nav-tab .tab-tooltip {
+    display: none; position: absolute;
+    top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    background: var(--charcoal); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em;
+    padding: 5px 12px; border-radius: 4px; white-space: nowrap; z-index: 100;
+  }
+  .nav-tab .tab-tooltip::before {
+    content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-bottom: 5px solid var(--border);
+  }
+  .nav-tab:hover .tab-tooltip { display: block; }
+
+  /* === HERO === */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: space-between; padding: 60px 24px;
+    position: relative; overflow: hidden;
+    background: radial-gradient(ellipse at 50% 80%, #1a1200 0%, #0D0D0D 65%);
+  }
+  .hero::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(245,200,66,0.03) 60px, rgba(245,200,66,0.03) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(245,200,66,0.03) 60px, rgba(245,200,66,0.03) 61px);
+    pointer-events: none;
+  }
+  .ticker-tape {
+    position: absolute; top: 0; width: 200%;
+    background: var(--gold); color: var(--dark);
+    font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+    padding: 6px 0; white-space: nowrap;
+    animation: ticker 18s linear infinite; letter-spacing: 0.05em; z-index: 10;
+  }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  .hero-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    position: relative; z-index: 2;
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase;
+    padding-top: 32px;
+  }
+  .hero-top .day-tag { color: var(--gold); }
+
+  .hero-main {
+    position: relative; z-index: 2;
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; text-align: center;
+    align-items: center; padding: 60px 0 40px;
+  }
+
+  .badge {
+    display: inline-block; border: 1px solid var(--gold); color: var(--gold);
+    font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.15em;
+    padding: 6px 18px; border-radius: 2px; margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(3rem, 9vw, 8rem);
+    font-weight: 900; line-height: 0.95; letter-spacing: -0.02em;
+    animation: fadeUp 0.8s ease 0.1s both;
+  }
+  .hero h1 span { color: var(--gold); display: block; font-style: italic; }
+  .hero-desc {
+    font-size: 1.05rem; color: var(--muted);
+    margin-top: 28px; max-width: 520px; line-height: 1.8;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .hero-bottom {
+    position: relative; z-index: 2;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    padding-top: 40px; border-top: 1px solid var(--border);
+  }
+  .prog-cover { display: flex; gap: 5px; align-items: center; }
+  .pc-seg { width: 28px; height: 3px; background: var(--border); border-radius: 2px; }
+  .pc-seg.done { background: var(--gold); }
+  .pc-seg.now { background: var(--text); }
+  .cover-quote {
+    font-family: 'Noto Serif TC', serif; font-style: italic;
+    font-size: 0.88rem; color: var(--muted); text-align: right;
+    max-width: 360px; line-height: 1.65;
+  }
+
+  /* === PROGRESS === */
+  .progress-section { background: var(--charcoal); padding: 28px 24px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .progress-inner { max-width: 800px; margin: 0 auto; display: flex; align-items: center; gap: 20px; }
+  .progress-text { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+  .progress-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill { width: 0; height: 100%; background: linear-gradient(90deg, var(--gold), #ffdd44); border-radius: 3px; transition: width 1.2s ease; }
+
+  /* === CHAPTER HEADERS === */
+  .chapter {
+    background: var(--charcoal); padding: 60px 24px; position: relative; overflow: hidden;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  .chapter::before {
+    content: attr(data-num); position: absolute; right: 32px; bottom: -20px;
+    font-family: 'Noto Serif TC', serif; font-size: 160px; font-weight: 900;
+    color: rgba(255,255,255,0.02); line-height: 1; pointer-events: none;
+  }
+  .chapter-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 2; }
+  .ch-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; }
+  .chapter h2 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900; line-height: 1.05; color: var(--text);
+  }
+  .chapter h2 .sub { display: block; font-style: italic; font-weight: 400; color: var(--gold); font-size: 0.55em; margin-top: 6px; }
+
+  /* === SECTION === */
+  .section { max-width: 800px; margin: 0 auto; padding: 80px 24px; }
+  .section-label { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; }
+  .section h3 { font-family: 'Noto Serif TC', serif; font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 700; line-height: 1.2; margin-bottom: 20px; }
+  .section p { color: #C8C4BC; font-size: 1.05rem; margin-bottom: 16px; }
+
+  /* === DIVIDERS === */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+  .section-divider { display: flex; align-items: center; gap: 16px; max-width: 800px; margin: 0 auto; padding: 0 24px; }
+  .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .section-divider span { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; white-space: nowrap; }
+
+  /* === PULL QUOTE === */
+  .pull {
+    border-left: 3px solid var(--gold); padding: 20px 28px; margin: 36px 0;
+    background: rgba(245,200,66,0.03); border-radius: 0 8px 8px 0;
+  }
+  .pull p { font-family: 'Noto Serif TC', serif; font-size: clamp(1.1rem, 2.5vw, 1.4rem); font-style: italic; color: var(--text); line-height: 1.55; margin: 0; }
+  .pull cite { display: block; margin-top: 10px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--muted); font-style: normal; }
+
+  /* === COMPOUND CHART === */
+  .compound-viz {
+    background: var(--charcoal); border: 1px solid var(--border);
+    border-radius: 12px; padding: 36px; margin: 28px 0;
+  }
+  .cv-title { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--muted); margin-bottom: 28px; text-transform: uppercase; }
+  .cv-rows { display: flex; flex-direction: column; gap: 12px; }
+  .cv-row { display: flex; align-items: center; gap: 16px; }
+  .cv-year { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); width: 60px; flex-shrink: 0; }
+  .cv-bar-bg { flex: 1; height: 28px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; }
+  .cv-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 12px; }
+  .cv-bar-label { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; color: var(--dark); }
+  .cv-amount { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--gold); width: 90px; text-align: right; flex-shrink: 0; }
+
+  /* === RISK MATRIX === */
+  .risk-matrix {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+    background: var(--border); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin: 28px 0;
+  }
+  .rm-cell { background: var(--card); padding: 24px 22px; transition: background 0.15s; }
+  .rm-cell:hover { background: #2a2a2a; }
+  .rm-title { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+  .rm-cell h4 { font-family: 'Noto Serif TC', serif; font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  .rm-cell p { font-size: 0.85rem; color: var(--muted); margin: 0; line-height: 1.6; }
+
+  /* === DANGER BOX === */
+  .danger-box {
+    background: rgba(232,59,59,0.05); border: 1px solid rgba(232,59,59,0.2);
+    border-left: 4px solid var(--red); border-radius: 0 10px 10px 0;
+    padding: 28px 32px; margin: 28px 0; position: relative;
+  }
+  .danger-box::before { content: '⚠ 真實案例警示'; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--red); display: block; margin-bottom: 12px; }
+  .danger-box p { color: #C8C4BC; font-size: 0.92rem; margin: 0; line-height: 1.75; }
+
+  /* === MANIFESTO === */
+  .manifesto { background: var(--charcoal); padding: 80px 24px; margin: 0; position: relative; overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .manifesto::before {
+    content: '"'; position: absolute; top: -60px; left: 24px;
+    font-family: 'Noto Serif TC', serif; font-size: 300px; font-weight: 900;
+    color: rgba(245,200,66,0.04); line-height: 1; pointer-events: none;
+  }
+  .mf-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 2; }
+  .mf-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.25em; color: var(--gold); margin-bottom: 40px; text-transform: uppercase; }
+  .mf-items { display: flex; flex-direction: column; gap: 0; }
+  .mf-item { display: flex; gap: 28px; padding: 28px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+  .mf-item:last-child { border-bottom: none; }
+  .mf-num { font-family: 'Noto Serif TC', serif; font-size: 2.5rem; font-weight: 900; color: var(--border); line-height: 1; flex-shrink: 0; width: 50px; margin-top: 4px; }
+  .mf-title { font-family: 'Noto Serif TC', serif; font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .mf-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin: 0; }
+
+  /* === RECAP GRID === */
+  .recap-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2px; background: var(--border); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin: 28px 0;
+  }
+  .rc-card { background: var(--card); padding: 22px 20px; transition: background 0.15s; }
+  .rc-card:hover { background: #2a2a2a; }
+  .rc-day { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--gold); margin-bottom: 8px; }
+  .rc-card h4 { font-family: 'Noto Serif TC', serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+  .rc-card p { font-size: 0.82rem; color: var(--muted); margin: 0; line-height: 1.55; }
+
+  /* === REPORT CARD === */
+  .report-card { background: var(--charcoal); border: 1px solid var(--border); border-radius: 16px; padding: 44px; margin: 36px 0; position: relative; overflow: hidden; }
+  .report-card::after { content: ''; position: absolute; top: -80px; right: -80px; width: 260px; height: 260px; background: radial-gradient(circle, rgba(245,200,66,0.06) 0%, transparent 70%); pointer-events: none; }
+  .rc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); position: relative; z-index: 2; }
+  .rc-header-left { position: relative; z-index: 2; }
+  .rc-eyebrow { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 8px; }
+  .rc-title { font-family: 'Noto Serif TC', serif; font-size: 1.6rem; font-weight: 700; color: var(--text); }
+  .rc-grade { font-family: 'Noto Serif TC', serif; font-size: 5rem; font-weight: 900; color: var(--gold); line-height: 1; position: relative; z-index: 2; }
+  .rc-items { display: flex; flex-direction: column; gap: 0; position: relative; z-index: 2; }
+  .rc-item { display: flex; align-items: center; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .rc-item:last-child { border-bottom: none; }
+  .rc-skill { font-size: 0.9rem; color: var(--muted); flex: 1; }
+  .rc-stars { font-size: 0.9rem; letter-spacing: 2px; }
+  .rc-comment { font-family: 'Space Mono', monospace; font-size: 10px; color: #555; width: 160px; text-align: right; line-height: 1.4; flex-shrink: 0; }
+
+  /* === NEXT STEPS === */
+  .next-steps { display: flex; flex-direction: column; gap: 12px; margin: 28px 0; }
+  .ns-item { display: flex; gap: 20px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; align-items: flex-start; transition: border-color 0.2s; }
+  .ns-item:hover { border-color: var(--gold); }
+  .ns-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+  .ns-content h4 { font-family: 'Noto Serif TC', serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .ns-content p { font-size: 0.85rem; color: var(--muted); margin: 0; line-height: 1.65; }
+
+  /* === CHECKLIST === */
+  .checklist { list-style: none; margin: 16px 0; }
+  .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.97rem; color: #C8C4BC; }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box { width: 20px; height: 20px; border: 1.5px solid var(--border); border-radius: 4px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+  .check-box.done { background: var(--green); border-color: var(--green); }
+  .check-box.done::after { content: '✓'; color: white; font-size: 12px; font-weight: 700; }
+
+  /* === HOMEWORK === */
+  .homework { background: var(--charcoal); border: 1px solid var(--border); border-radius: 12px; padding: 44px; margin: 48px 0; position: relative; overflow: hidden; }
+  .homework::before { content: 'FINAL'; position: absolute; right: -16px; bottom: -24px; font-family: 'Noto Serif TC', serif; font-size: 110px; font-weight: 900; color: rgba(255,255,255,0.02); line-height: 1; pointer-events: none; }
+  .hw-kicker { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 12px; }
+  .homework h3 { font-family: 'Noto Serif TC', serif; font-size: 1.6rem; font-weight: 700; color: var(--text); margin-bottom: 28px; }
+  .hw-item { display: flex; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--border); align-items: flex-start; position: relative; z-index: 2; }
+  .hw-item:last-child { border-bottom: none; }
+  .hw-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gold); background: rgba(245,200,66,0.08); border: 1px solid rgba(245,200,66,0.2); padding: 4px 10px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+  .hw-item p { font-size: 0.95rem; color: #C8C4BC; margin: 0; line-height: 1.75; }
+  .hw-item strong { color: var(--text); }
+
+  /* === FINAL FOOTER === */
+  .final-footer {
+    background: var(--charcoal); min-height: 380px;
+    display: flex; flex-direction: column; justify-content: center;
+    align-items: center; text-align: center; padding: 80px 24px;
+    position: relative; overflow: hidden; border-top: 1px solid var(--border);
+  }
+  .final-footer::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(245,200,66,0.05) 0%, transparent 60%); pointer-events: none; }
+  .ff-eyebrow { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.25em; color: var(--muted); margin-bottom: 28px; position: relative; z-index: 2; }
+  .ff-title { font-family: 'Noto Serif TC', serif; font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900; color: var(--text); line-height: 1.0; margin-bottom: 24px; position: relative; z-index: 2; }
+  .ff-title .gold { color: var(--gold); }
+  .ff-sub { font-size: 1rem; color: var(--muted); max-width: 480px; line-height: 1.75; margin-bottom: 40px; position: relative; z-index: 2; }
+  .ff-divider { width: 60px; height: 1px; background: var(--gold); margin: 0 auto 32px; position: relative; z-index: 2; }
+  .ff-note { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #444; position: relative; z-index: 2; }
+
+  /* === SCROLL REVEAL === */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* === RWD === */
+  @media (max-width: 600px) {
+    .risk-matrix { grid-template-columns: 1fr; }
+    .rc-header { flex-direction: column; gap: 12px; }
+    .rc-comment { display: none; }
+    .recap-grid { grid-template-columns: 1fr 1fr; }
+    .mf-num { font-size: 1.8rem; width: 36px; }
+  }
+  @media (max-width: 480px) {
+    .course-nav-brand { font-size: 9px; letter-spacing: 0.12em; padding: 7px 16px 5px; }
+    .course-nav-tabs { gap: 3px; padding: 5px 8px; }
+    .nav-tab a { font-size: 10px; padding: 4px 8px; }
+    .section { padding: 56px 20px; }
+    .hero h1 { font-size: clamp(2.8rem, 10vw, 5rem); }
+    .homework { padding: 28px 20px; }
+    .report-card { padding: 28px 20px; }
+    .manifesto { padding: 56px 20px; }
+    .chapter { padding: 44px 20px; }
+    .hero-top { flex-direction: column; gap: 4px; }
+    .hero-bottom { flex-direction: column; gap: 20px; }
+    .cover-quote { text-align: left; }
+    .recap-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COURSE NAV -->
+<nav class="course-nav">
+  <div class="course-nav-brand">股票小白養成計劃</div>
+  <div class="course-nav-tabs">
+    <div class="nav-tab">
+      <a href="index.html">D1</a>
+      <span class="tab-tooltip">Day 1 認識股票</span>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day2.html">D2</a>
+      <span class="tab-tooltip">Day 2 選股方向</span>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day3.html">D3</a>
+      <span class="tab-tooltip">Day 3 基本面</span>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day4.html">D4</a>
+      <span class="tab-tooltip">Day 4 技術面</span>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day5.html">D5</a>
+      <span class="tab-tooltip">Day 5 籌碼面</span>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day6.html">D6</a>
+      <span class="tab-tooltip">Day 6 實戰選股</span>
+    </div>
+    <div class="nav-tab">
+      <a href="stock-course-day7.html" class="active">Day 7 建立系統</a>
+    </div>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-tape">
+  TSM +2.1% ▲ &nbsp;&nbsp; SOFI +4.1% ▲ &nbsp;&nbsp; NOK +3.2% ▲ &nbsp;&nbsp; QQQ +0.8% ▲ &nbsp;&nbsp; NVDA +1.8% ▲ &nbsp;&nbsp; 台積電 +2.3% ▲ &nbsp;&nbsp; AMZN +0.9% ▲ &nbsp;&nbsp; ASML +1.3% ▲ &nbsp;&nbsp; 0050 +1.2% ▲ &nbsp;&nbsp; 聯發科 +1.5% ▲ &nbsp;&nbsp; NOW +2.4% ▲ &nbsp;&nbsp; MRVL +3.1% ▲ &nbsp;&nbsp; VOO +0.7% ▲ &nbsp;&nbsp;
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-top">
+    <span>股票小白養成計劃 · 七日課程</span>
+    <span class="day-tag">Day 07 / 07 · Final Chapter</span>
+  </div>
+
+  <div class="hero-main">
+    <div class="badge">終章 · The System</div>
+    <h1>
+      建立你的
+      <span>投資系統</span>
+    </h1>
+    <p class="hero-desc">工具學完了。數字看懂了。現在最重要的事，是把這一切變成一套屬於你自己的、可以重複執行的系統——讓時間和複利為你工作。</p>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="prog-cover">
+      <div class="pc-seg done"></div>
+      <div class="pc-seg done"></div>
+      <div class="pc-seg done"></div>
+      <div class="pc-seg done"></div>
+      <div class="pc-seg done"></div>
+      <div class="pc-seg done"></div>
+      <div class="pc-seg now"></div>
+    </div>
+    <div class="cover-quote">
+      "The stock market is a device for transferring money<br>from the impatient to the patient."<br>— Warren Buffett
+    </div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<div class="progress-section">
+  <div class="progress-inner">
+    <div class="progress-text">課程進度</div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text">7 / 7 天</div>
+  </div>
+</div>
+
+<!-- CHAPTER I -->
+<section class="chapter" data-num="I">
+  <div class="chapter-inner">
+    <div class="ch-label">Chapter I</div>
+    <h2>複利<span class="sub">The Eighth Wonder of the World</span></h2>
+  </div>
+</section>
+
+<div class="section reveal">
+  <div class="section-label">The Power of Compounding</div>
+  <h3>為什麼時間是你最強的武器</h3>
+  <p>你這七天學的所有技術，都只是幫你「買在比較好的位置」。但真正讓財富增長的，是時間和複利的組合——不是選股技術，是你願意等待多久。</p>
+
+  <div class="pull">
+    <p>"複利是世界第八大奇蹟。懂的人賺它，不懂的人付它。"</p>
+    <cite>— Albert Einstein（據傳）</cite>
+  </div>
+
+  <div class="compound-viz">
+    <div class="cv-title">每年報酬率 10%，$10,000 元的複利成長</div>
+    <div class="cv-rows">
+      <div class="cv-row">
+        <div class="cv-year">現在</div>
+        <div class="cv-bar-bg"><div class="cv-bar" style="width:5%; background: rgba(245,200,66,0.3)"></div></div>
+        <div class="cv-amount">$10,000</div>
+      </div>
+      <div class="cv-row">
+        <div class="cv-year">5 年後</div>
+        <div class="cv-bar-bg"><div class="cv-bar" style="width:8%; background: rgba(245,200,66,0.4)"></div></div>
+        <div class="cv-amount">$16,105</div>
+      </div>
+      <div class="cv-row">
+        <div class="cv-year">10 年後</div>
+        <div class="cv-bar-bg"><div class="cv-bar" style="width:13%; background: rgba(245,200,66,0.5)"></div></div>
+        <div class="cv-amount">$25,937</div>
+      </div>
+      <div class="cv-row">
+        <div class="cv-year">20 年後</div>
+        <div class="cv-bar-bg"><div class="cv-bar" style="width:28%; background: rgba(245,200,66,0.65)"></div></div>
+        <div class="cv-amount">$67,275</div>
+      </div>
+      <div class="cv-row">
+        <div class="cv-year">30 年後</div>
+        <div class="cv-bar-bg"><div class="cv-bar" style="width:60%; background: rgba(245,200,66,0.8)"></div></div>
+        <div class="cv-amount">$174,494</div>
+      </div>
+      <div class="cv-row">
+        <div class="cv-year">40 年後</div>
+        <div class="cv-bar-bg"><div class="cv-bar" style="width:100%; background: var(--gold)"><span class="cv-bar-label">$452,593</span></div></div>
+        <div class="cv-amount" style="color:#fff">$452,593</div>
+      </div>
+    </div>
+  </div>
+
+  <p>$10,000 元，什麼都不做、每年只賺 10%，40 年後變成 $452,593——漲了 45 倍。這不是魔法，是數學。你需要的只有三樣東西：<strong style="color:var(--text)">時間、紀律、不要把本金虧光。</strong></p>
+</div>
+
+<!-- CHAPTER II -->
+<section class="chapter" data-num="II">
+  <div class="chapter-inner">
+    <div class="ch-label">Chapter II</div>
+    <h2>風險控制<span class="sub">Don't Lose Money First</span></h2>
+  </div>
+</section>
+
+<div class="section reveal">
+  <div class="section-label">Risk Management</div>
+  <h3>巴菲特的兩條規則</h3>
+
+  <div class="pull">
+    <p>"Rule No.1: Never lose money.<br>Rule No.2: Never forget Rule No.1."</p>
+    <cite>— Warren Buffett</cite>
+  </div>
+
+  <p>這句話聽起來像廢話，但背後有深刻的數學邏輯：</p>
+
+  <div class="risk-matrix">
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--red)">虧損 50%</div>
+      <h4>需要漲 100% 才能回本</h4>
+      <p>從 $100 跌到 $50，需要再漲 100% 才回到 $100。這不是對稱的。</p>
+    </div>
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--red)">虧損 80%</div>
+      <h4>需要漲 400% 才能回本</h4>
+      <p>SOXL 從 $90 跌到 $15，你需要漲 500% 才能回本。這就是為什麼不能大虧。</p>
+    </div>
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--green)">控制虧損在 10%</div>
+      <h4>只需漲 11% 就能回本</h4>
+      <p>設好停損，把每次虧損控制在 10% 內，回本容易，複利效果保留。</p>
+    </div>
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--green)">SOXL 的教訓</div>
+      <h4>你差點中的陷阱</h4>
+      <p>你看到 RSI 67、MACD 賣出訊號，判斷「不是好時機」——這個判斷救了你。這就是七天課程的價值。</p>
+    </div>
+  </div>
+
+  <div class="danger-box">
+    <p>你在 Day 6 研究的 SOXL：從 $90 跌到 $15，跌幅 83%。要從 $15 回到 $90，需要漲 <strong style="color:#ff9080">500%</strong>。而你用這七天學的技術面分析，在 RSI 67、MACD 賣出訊號的時候判斷「不是進場時機」——這個判斷，在真實市場上可能幫你省下了大量虧損。<br><br>這就是為什麼我們花了整整七天學工具，而不是直接給你「明牌」。</p>
+  </div>
+</div>
+
+<div class="section-divider"><span>風險控制的四大原則</span></div>
+
+<div class="section reveal">
+  <div class="risk-matrix">
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--gold)">原則一</div>
+      <h4>永遠設停損</h4>
+      <p>進場前就決定「跌到哪裡我就出場」，不等到真的跌了才猶豫。情緒是停損最大的敵人。</p>
+    </div>
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--gold)">原則二</div>
+      <h4>單股不超過 20%</h4>
+      <p>就算台積電，也不超過總資金的 20-25%。分散不是懦弱，是數學上的正確選擇。</p>
+    </div>
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--gold)">原則三</div>
+      <h4>只用閒置資金</h4>
+      <p>不借錢、不用生活費、不用近三年內要用到的錢。投資需要時間，急用錢會逼你在最差時機賣出。</p>
+    </div>
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--gold)">原則四</div>
+      <h4>遠離槓桿產品</h4>
+      <p>SOXL、期貨、選擇權——在你有超過三年投資經驗之前，這些東西不要碰。報酬再誘人也一樣。</p>
+    </div>
+  </div>
+</div>
+
+<!-- CHAPTER III -->
+<section class="chapter" data-num="III">
+  <div class="chapter-inner">
+    <div class="ch-label">Chapter III</div>
+    <h2>投資心理學<span class="sub">Your Worst Enemy Is You</span></h2>
+  </div>
+</section>
+
+<div class="section reveal">
+  <div class="section-label">Psychology</div>
+  <h3>為什麼大多數人虧錢</h3>
+  <p>市場上流傳一個統計：散戶長期報酬率遠低於大盤。不是因為他們選的股票差，而是因為他們的<strong style="color:var(--text)">行為</strong>差——在最高點追買、在最低點割肉。</p>
+
+  <div class="risk-matrix">
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--red)">恐懼（Fear）</div>
+      <h4>跌了就慌，割在最低點</h4>
+      <p>2026年4月台積電從$280跌到$210，很多人割肉，然後看著它反彈到$250。恐懼讓你賣在低點。</p>
+    </div>
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--red)">貪婪（Greed）</div>
+      <h4>漲了就追，買在最高點</h4>
+      <p>Nokia 從 $5 漲到 $15，然後你看新聞說「AI 轉型概念股狂漲」，這時才進場通常買在高點。</p>
+    </div>
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--red)">確認偏誤</div>
+      <h4>只看支持自己觀點的資訊</h4>
+      <p>買了某支股票之後，只注意好消息，忽視壞消息。你要主動尋找「反對你的論點」。</p>
+    </div>
+    <div class="rm-cell">
+      <div class="rm-title" style="color:var(--red)">過度交易</div>
+      <h4>頻繁買賣侵蝕報酬</h4>
+      <p>每次交易都有成本（手續費、稅）。研究顯示交易次數越多的帳戶，長期報酬越差。</p>
+    </div>
+  </div>
+
+  <div class="pull">
+    <p>"投資最重要的事，不是找到最好的股票，而是在正確的時候什麼都不做。"</p>
+    <cite>— Charlie Munger</cite>
+  </div>
+
+  <p>解藥是什麼？就是你這七天學的東西——<strong style="color:var(--text)">用規則取代情緒。</strong>事先設好進場條件、停損點、目標價，到了就執行，不讓感覺決定你的操作。</p>
+</div>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="mf-inner">
+    <div class="mf-label">投資人誓言 · Your Investment Manifesto</div>
+    <div class="mf-items">
+      <div class="mf-item">
+        <div class="mf-num">01</div>
+        <div>
+          <div class="mf-title">我只買我真正理解的公司</div>
+          <div class="mf-desc">如果我不能用一段話解釋「這家公司怎麼賺錢、為什麼會繼續成長」，我就不買。聽消息、跟感覺不算「理解」。</div>
+        </div>
+      </div>
+      <div class="mf-item">
+        <div class="mf-num">02</div>
+        <div>
+          <div class="mf-title">我用三面向分析，不用單一訊號做決策</div>
+          <div class="mf-desc">基本面確認公司值得買，技術面確認時機，籌碼面確認聰明錢方向。三者至少兩個對齊，才考慮進場。</div>
+        </div>
+      </div>
+      <div class="mf-item">
+        <div class="mf-num">03</div>
+        <div>
+          <div class="mf-title">我每次進場前都設好停損，並且無條件執行</div>
+          <div class="mf-desc">停損不是認輸，是保護複利的防火牆。我寧可小虧出場，不要大虧套牢。</div>
+        </div>
+      </div>
+      <div class="mf-item">
+        <div class="mf-num">04</div>
+        <div>
+          <div class="mf-title">我不碰我不懂的複雜金融工具</div>
+          <div class="mf-desc">槓桿 ETF、期貨、選擇權——在我有足夠經驗之前，這些都是「別人的遊戲」。我的財富不需要靠它們增長。</div>
+        </div>
+      </div>
+      <div class="mf-item">
+        <div class="mf-num">05</div>
+        <div>
+          <div class="mf-title">我讓時間和複利工作，不試圖一夜致富</div>
+          <div class="mf-desc">投資是馬拉松，不是短跑。年化 15% 長期執行，比偶爾賺 100% 再虧 80% 好得多。</div>
+        </div>
+      </div>
+      <div class="mf-item">
+        <div class="mf-num">06</div>
+        <div>
+          <div class="mf-title">我每季檢視我的投資論點，不是股價</div>
+          <div class="mf-desc">如果公司基本面沒有惡化，我不因為股價短期下跌而賣出。如果投資論點失效了，不管賺賠我都重新評估。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WEEK RECAP -->
+<div class="section reveal">
+  <div class="section-label" style="color:#4A9EFF">Seven Days Summary</div>
+  <h3>你這七天學了什麼</h3>
+
+  <div class="recap-grid">
+    <div class="rc-card">
+      <div class="rc-day">Day 1</div>
+      <h4>認識股票世界</h4>
+      <p>股票是什麼、三種類型、小白常踩的地雷。Nokia 是你的第一個案例。</p>
+    </div>
+    <div class="rc-card">
+      <div class="rc-day">Day 2</div>
+      <h4>選股方向</h4>
+      <p>由上而下 vs 由下而上，產業地圖，你建立了第一份產業流程圖。</p>
+    </div>
+    <div class="rc-card">
+      <div class="rc-day">Day 3</div>
+      <h4>基本面分析</h4>
+      <p>三大財報、五個指標，你分析了 NVDA、TSMC、AMZN，並且判斷 Nokia 是「買故事」。</p>
+    </div>
+    <div class="rc-card">
+      <div class="rc-day">Day 4</div>
+      <h4>技術面分析</h4>
+      <p>K 線、均線、RSI、MACD，你自己看懂了 Nokia、TSMC、QQQ、VOO 的技術面。</p>
+    </div>
+    <div class="rc-card">
+      <div class="rc-day">Day 5</div>
+      <h4>籌碼面分析</h4>
+      <p>機構持股、空頭比例、13F，你完成了 SoFi 的三面向完整分析。</p>
+    </div>
+    <div class="rc-card">
+      <div class="rc-day">Day 6</div>
+      <h4>實戰選股</h4>
+      <p>進場條件、停損點、倉位控制，你識破了 SOXL 的陷阱，分析了台股供應鏈。</p>
+    </div>
+    <div class="rc-card">
+      <div class="rc-day">Day 7</div>
+      <h4>建立系統</h4>
+      <p>複利、風控、心理學、投資人誓言。把工具變成屬於你的長期系統。</p>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL REPORT CARD -->
+<div class="section reveal">
+  <div class="report-card">
+    <div class="rc-header">
+      <div class="rc-header-left">
+        <div class="rc-eyebrow">FINAL ASSESSMENT</div>
+        <div class="rc-title">七日課程結業成績單</div>
+      </div>
+      <div class="rc-grade">A</div>
+    </div>
+    <div class="rc-items">
+      <div class="rc-item">
+        <div class="rc-skill">基本面分析能力</div>
+        <div class="rc-stars">⭐⭐⭐⭐⭐</div>
+        <div class="rc-comment">Nokia P/FCF vs TSMC 的比較分析令人印象深刻</div>
+      </div>
+      <div class="rc-item">
+        <div class="rc-skill">技術面判讀能力</div>
+        <div class="rc-stars">⭐⭐⭐⭐⭐</div>
+        <div class="rc-comment">自己看懂 VOO 的死亡/黃金交叉，主動找 5 支股票分析</div>
+      </div>
+      <div class="rc-item">
+        <div class="rc-skill">籌碼面分析能力</div>
+        <div class="rc-stars">⭐⭐⭐⭐☆</div>
+        <div class="rc-comment">查到 4/29 爆量原因，主動找 Short Vol Ratio</div>
+      </div>
+      <div class="rc-item">
+        <div class="rc-skill">風險意識</div>
+        <div class="rc-stars">⭐⭐⭐⭐⭐</div>
+        <div class="rc-comment">SOXL 技術面判斷完全正確，識破槓桿陷阱</div>
+      </div>
+      <div class="rc-item">
+        <div class="rc-skill">投資論點建立</div>
+        <div class="rc-stars">⭐⭐⭐⭐⭐</div>
+        <div class="rc-comment">Nokia 論點從 Day 1 到 Day 6 持續精進，邏輯自洽</div>
+      </div>
+      <div class="rc-item">
+        <div class="rc-skill">主動學習精神</div>
+        <div class="rc-stars">⭐⭐⭐⭐⭐</div>
+        <div class="rc-comment">主動找 NOW、MRVL、台股供應鏈、0050，超出課程範圍</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"><span>接下來你要做什麼</span></div>
+
+<!-- NEXT STEPS -->
+<div class="section reveal">
+  <div class="section-label">Next Steps</div>
+  <h3>結業後的行動計劃</h3>
+
+  <div class="next-steps">
+    <div class="ns-item">
+      <div class="ns-icon">📓</div>
+      <div class="ns-content">
+        <h4>建立投資日記，每月記錄一次</h4>
+        <p>記下每筆持股的「投資論點」、進場理由、目標價、停損點。每季回頭看，你會發現自己進步了多少，也能發現自己的思維盲點。</p>
+      </div>
+    </div>
+    <div class="ns-item">
+      <div class="ns-icon">👁️</div>
+      <div class="ns-content">
+        <h4>每週花 30 分鐘追蹤你的觀察清單</h4>
+        <p>不用每天盯盤，每週看一次技術面圖表、確認是否有重大新聞、看看進場條件有沒有到。這樣的節奏才能持久。</p>
+      </div>
+    </div>
+    <div class="ns-item">
+      <div class="ns-icon">📚</div>
+      <div class="ns-content">
+        <h4>閱讀一本投資經典</h4>
+        <p>推薦從《彼得‧林區：征服股海》或《一個散戶的投資自白》開始，接著是《智慧型股票投資人》。這三本書會讓你的基本面分析再升一個層次。</p>
+      </div>
+    </div>
+    <div class="ns-item">
+      <div class="ns-icon">💰</div>
+      <div class="ns-content">
+        <h4>考慮先從 ETF 開始實際操作</h4>
+        <p>0050 或 QQQ 是最適合的起點——分散風險、有複利效果、讓你在市場中練習「持有的心理」。等心態穩了，再逐漸加入個股。</p>
+      </div>
+    </div>
+    <div class="ns-item">
+      <div class="ns-icon">🎯</div>
+      <div class="ns-content">
+        <h4>等待 SoFi 的進場訊號</h4>
+        <p>你研究最深的標的就是 SoFi。等 MA5 確認穿越 MA20、MACD 轉正、股價守住 $14——三個條件到了再動。7 月 21 日是下一次財報，那是最重要的催化劑。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL HOMEWORK -->
+<div class="section reveal">
+  <div class="homework">
+    <div class="hw-kicker">FINAL HOMEWORK — 結業作業</div>
+    <h3>寫下你的投資宣言</h3>
+    <div class="hw-item">
+      <div class="hw-num">01</div>
+      <p>用自己的話，寫下你的<strong>「投資人三原則」</strong>——三條你承諾自己永遠遵守的投資規則。不用跟課程的一樣，要寫你真正相信的。</p>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">02</div>
+      <p>把你目前的<strong>觀察清單最終版</strong>整理出來：每支股票的進場條件、停損點、倉位比例。這份清單要能讓六個月後的你看到，立刻知道當時在等什麼。</p>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">03</div>
+      <p>回答這個問題：<strong>「如果我用這七天學到的東西，在 4 月 7 日台股最低點那天買了台積電，現在的感受和判斷會跟當時不同嗎？」</strong> 這個思想實驗，會讓你真正理解工具的價值。</p>
+    </div>
+    <div class="hw-item">
+      <div class="hw-num">最後</div>
+      <p>設定一個<strong>六個月後的回顧提醒</strong>——在 2025 年 12 月 1 日，回來看看你的觀察清單，看看 SoFi、NOW、MRVL、台積電當時的判斷有沒有兌現。<br><br><strong>這才是真正的學習閉環：預測 → 等待 → 驗證 → 修正。</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY CHECKLIST -->
+<div class="section reveal">
+  <div class="section-label">Day 7 Summary</div>
+  <h3>今天學會了什麼？</h3>
+  <ul class="checklist">
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>複利是財富增長的核心引擎，時間比選股技術更重要</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>虧損是不對稱的——虧 50% 需要漲 100% 才回本，所以「不要大虧」比「追求大賺」更重要</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>恐懼和貪婪是散戶虧錢的根本原因，用規則取代情緒</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>投資系統 = 選股 SOP + 倉位控制 + 停損紀律 + 定期回顧</span></li>
+    <li><div class="check-box" onclick="toggleCheck(this)"></div><span>你已經有能力做三面向分析，現在需要的是時間和紀律去執行</span></li>
+  </ul>
+</div>
+
+<!-- FINAL FOOTER -->
+<footer class="final-footer">
+  <div class="ff-eyebrow">股票小白養成計劃 · 七日課程 · 結業</div>
+  <div class="ff-title">你不再是<br><span class="gold">小白</span>了</div>
+  <p class="ff-sub">七天前你問「股票是什麼」，現在你會看財報、讀 K 線、查籌碼、識破槓桿陷阱、分析台股供應鏈。這不是終點，是起點。</p>
+  <div class="ff-divider"></div>
+  <div class="ff-note">⚠ 本課程為教育用途，不構成任何投資建議。投資一定有風險，入市前請審慎評估個人財務狀況。</div>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 40);
+    });
+  }, { threshold: 0.07 });
+  reveals.forEach(el => obs.observe(el));
+
+  function toggleCheck(el) { el.classList.toggle('done'); }
+  setTimeout(() => { document.getElementById('progressFill').style.width = '100%'; }, 500);
+</script>
+</body>
+</html>
